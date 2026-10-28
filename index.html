@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ali Huzain · AI Engineer</title>
+<meta name="description" content="Ali Huzain, AI Engineer and Software Engineer in Amman, Jordan. LLM training data, workflow automation and full-stack systems.">
+<meta property="og:title" content="Ali Huzain · AI Engineer">
+<meta property="og:description" content="I review and validate the data that trains large language models, and build the software around it.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0B0D12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310131A'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-weight='800' font-size='28' fill='%23ffffff' text-anchor='middle'%3EAH%3C/text%3E%3Crect x='46' y='20' width='6' height='24' fill='%237D8DFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>
+  try { const t = localStorage.getItem('theme'); if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<style>
+/* Layout: a full-bleed live glyph field behind an oversized two-line name, then one 1240px column: stats rail, split project panels with live diagrams, a to-scale career timeline, toolkit grid, contact. */
+:root {
+  --bg: #ECEEF2;
+  --surface: #F7F8FA;
+  --ink: #10131A;
+  --muted: #586072;
+  --faint: #8A92A3;
+  --line: #D3D7DF;
+  --accent: #2445F0;
+  --on-accent: #FFFFFF;
+  --pass: #0B8466;
+  --warn: #C24A1C;
+
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --maxw: 1240px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B0D12; --surface: #12161E; --ink: #E7EAF1; --muted: #959DAE; --faint: #5F6778;
+    --line: #232936; --accent: #7D8DFF; --on-accent: #0B0D12; --pass: #3FCB9D; --warn: #FF8B5E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B0D12; --surface: #12161E; --ink: #E7EAF1; --muted: #959DAE; --faint: #5F6778;
+  --line: #232936; --accent: #7D8DFF; --on-accent: #0B0D12; --pass: #3FCB9D; --warn: #FF8B5E;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 16px/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  transition: background-color .4s, color .4s;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 30; background: var(--bg);
+}
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+a { color: inherit; }
+::selection { background: var(--accent); color: var(--on-accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.wrap {
+  max-width: var(--maxw); margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) {
+  .wrap {
+    padding-left: max(32px, env(safe-area-inset-left, 0px));
+    padding-right: max(32px, env(safe-area-inset-right, 0px));
+  }
+}
+
+.eyebrow {
+  font: 500 12px/1.4 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+kbd {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding-inline: 5px;
+  font: 500 11px/1 var(--f-mono); color: var(--ink);
+  border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--surface);
+}
+
+/* ---------- custom cursor (fine pointers only) ---------- */
+.cur { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; border-radius: 50%; opacity: 0; transition: opacity .25s; }
+.cur-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--accent); }
+.cur-ring {
+  width: 36px; height: 36px; margin: -18px 0 0 -18px; border: 1.5px solid var(--accent);
+  transition: opacity .25s, width .25s, height .25s, margin .25s, background-color .25s, border-color .25s;
+}
+.has-cursor .cur { opacity: 1; }
+.has-cursor, .has-cursor a, .has-cursor button { cursor: none; }
+.has-cursor .term input { cursor: text; }
+.cur-ring.big { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: transparent; }
+.cur-ring.huge { width: 120px; height: 120px; margin: -60px 0 0 -60px; background: transparent; border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.cur-hide .cur { opacity: 0 !important; }
+
+/* ---------- header ---------- */
+.site {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+.progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--accent);
+  transform-origin: left center; transform: scaleX(var(--p, 0));
+}
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+.mark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 500 13px/1 var(--f-mono); }
+.mark-glyph {
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px;
+  background: var(--ink); color: var(--bg); font: 700 13px/1 var(--f-display); letter-spacing: -.02em;
+}
+.nav { display: flex; align-items: center; gap: 24px; }
+.nav a.l {
+  text-decoration: none; font: 500 12px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); padding-block: 8px; transition: color .2s;
+}
+.nav a.l:hover { color: var(--ink); }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; transition: border-color .2s;
+}
+.icon-btn:hover { border-color: var(--ink); }
+.icon-btn svg { width: 16px; height: 16px; }
+.term-btn { gap: 8px; }
+.term-btn kbd { margin-left: 2px; }
+@media (max-width: 760px) { .nav a.l { display: none; } .nav { gap: 10px; } .term-btn kbd { display: none; } }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 48px; padding-inline: 22px; border-radius: 999px; border: 1px solid transparent;
+  font: 600 15px/1 var(--f-body); text-decoration: none; cursor: pointer; color: var(--ink);
+  transition: background-color .2s, border-color .2s, color .2s, transform .35s cubic-bezier(.2, .8, .2, 1);
+}
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 84%, var(--ink)); }
+.btn-ghost { background: transparent; border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-sm { height: 36px; padding-inline: 16px; font-size: 13.5px; }
+.btn .arr { transition: transform .25s; }
+.btn:hover .arr { transform: translateX(3px); }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: clip; isolation: isolate; }
+#field {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; display: block;
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+}
+.hero .wrap { padding-block: clamp(40px, 8vw, 104px) clamp(36px, 5vw, 64px); }
+.hero-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
+.avail { display: inline-flex; align-items: center; gap: 10px; }
+.pulse { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--pass); }
+.pulse::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--pass);
+  animation: ring 2.4s ease-out infinite;
+}
+@keyframes ring { from { transform: scale(.5); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+
+.name {
+  margin: clamp(20px, 3vw, 36px) 0 0;
+  font-family: var(--f-display); font-weight: 780;
+  font-size: clamp(76px, 17.5vw, 236px); line-height: .84; letter-spacing: -.055em;
+  user-select: none;
+}
+.name .line { display: block; white-space: nowrap; }
+.name .line + .line { padding-left: .42em; }
+.name .ch { display: inline-block; text-align: center; font-variation-settings: "opsz" 96, "wght" var(--w, 780); }
+.caret {
+  display: inline-block; width: .38em; height: .68em; margin-left: .06em;
+  background: var(--accent); vertical-align: -.02em; border-radius: .03em;
+  animation: blink 1.15s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.hero-foot {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 540px);
+  gap: 28px 48px; align-items: end; margin-top: clamp(32px, 5vw, 56px);
+}
+.lede { margin: 0; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.5; max-width: 40ch; text-wrap: pretty; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.field-cap { display: grid; gap: 6px; font: 400 12px/1.5 var(--f-mono); color: var(--muted); }
+.field-cap b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+.field-cap .k { display: inline-flex; align-items: center; gap: 8px; }
+@media (max-width: 820px) {
+  .hero-foot { grid-template-columns: minmax(0, 1fr); }
+  .field-cap { order: 2; }
+}
+@media (hover: none) { .field-cap .k { display: none; } }
+
+/* ---------- stats ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+.stat { padding: 28px 24px; border-left: 1px solid var(--line); min-width: 0; }
+.stat:first-child { border-left: 0; padding-left: 0; }
+.num {
+  font: 620 clamp(40px, 5.2vw, 68px)/1 var(--f-display); letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.num .u { color: var(--accent); }
+.lbl { margin-top: 12px; font-size: 14.5px; line-height: 1.45; color: var(--muted); max-width: 24ch; }
+@media (max-width: 820px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+/* ---------- sections ---------- */
+section.sec { padding-block: clamp(72px, 10vw, 128px); }
+.sec-head {
+  display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 16px 24px;
+  align-items: baseline; margin-bottom: clamp(36px, 5vw, 56px);
+}
+h2 {
+  margin: 0; font: 650 clamp(34px, 5vw, 60px)/1.02 var(--f-display); letter-spacing: -.035em;
+  text-wrap: balance; max-width: 20ch;
+}
+h2 .w { transition: color .6s ease; transition-delay: calc(var(--i, 0) * 55ms); }
+h2.dim .w { color: var(--faint); }
+@media (max-width: 720px) { .sec-head { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- projects ---------- */
+.project {
+  display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(28px, 4vw, 56px); padding-block: clamp(36px, 4vw, 56px); border-top: 1px solid var(--line);
+}
+.project:last-child { border-bottom: 1px solid var(--line); }
+.p-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.live { display: inline-flex; align-items: center; gap: 8px; color: var(--pass); }
+.live i { width: 7px; height: 7px; border-radius: 50%; background: var(--pass); }
+h3 { margin: 14px 0 12px; font: 650 clamp(28px, 3.3vw, 40px)/1.05 var(--f-display); letter-spacing: -.025em; text-wrap: balance; }
+.p-desc { margin: 0; color: var(--muted); max-width: 54ch; text-wrap: pretty; }
+.outcomes { list-style: none; margin: 28px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.outcomes li {
+  display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 16px; align-items: baseline;
+  padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px;
+}
+.outcomes .m { font: 620 28px/1 var(--f-display); letter-spacing: -.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.outcomes .m.word { font: 500 12.5px/1.6 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; padding: 0; list-style: none; }
+.stack li { font: 400 12.5px/1 var(--f-mono); padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); }
+@media (max-width: 900px) { .project { grid-template-columns: minmax(0, 1fr); } }
+
+.viz {
+  position: relative; min-width: 0; align-self: start; display: flex; flex-direction: column; gap: 14px; margin: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1), border-color .3s;
+}
+.viz.tilting { transition: transform .1s linear, border-color .3s; }
+.viz::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 12%, transparent), transparent 65%);
+}
+.viz:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.viz:hover::before { opacity: 1; }
+.viz > * { position: relative; }
+.viz-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.viz-top .f { font: 500 12.5px/1 var(--f-mono); color: var(--ink); }
+.viz-top .f span { color: var(--faint); }
+.viz-scroll { overflow-x: auto; margin-inline: -4px; padding-inline: 4px; }
+.viz svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.viz-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+
+/* order flow */
+.trk { stroke: var(--line); stroke-width: 2; }
+.trk-on { stroke: var(--accent); stroke-width: 2; }
+.stg .ring { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: stroke .25s, fill .25s; }
+.stg .core { fill: var(--faint); transition: fill .25s; }
+.stg .lb { fill: var(--ink); font: 500 12px var(--f-mono); text-anchor: middle; }
+.stg .ok { fill: var(--pass); font: 500 11px var(--f-mono); text-anchor: middle; opacity: 0; transition: opacity .3s; }
+.stg.on .ring { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.stg.on .core, .stg.done .core { fill: var(--accent); }
+.stg.done .ok { opacity: 1; }
+.pk-halo { fill: var(--accent); opacity: .18; }
+.pk-dot { fill: var(--accent); }
+.pk-tag rect { fill: var(--ink); }
+.pk-tag text { fill: var(--bg); font: 500 10.5px var(--f-mono); text-anchor: middle; }
+
+/* workflow */
+.edge { stroke: var(--line); stroke-width: 1.5; fill: none; transition: stroke .2s; }
+.edge.hot { stroke: var(--accent); }
+.node rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.25; transition: stroke .2s, fill .2s; }
+.node .t { fill: var(--ink); font: 600 13px var(--f-body); }
+.node .s { fill: var(--muted); font: 400 10.5px var(--f-mono); }
+.node.hot rect { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 9%, var(--bg)); }
+.node.hit rect { stroke: var(--ink); }
+.tk circle { stroke: var(--surface); stroke-width: 2; }
+.tk text { font: 500 10px var(--f-mono); text-anchor: middle; }
+.p1 { fill: var(--warn); } .p2 { fill: var(--accent); } .p3 { fill: var(--pass); }
+
+.log {
+  list-style: none; margin: 0; padding: 8px 12px; min-height: 104px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  font: 400 12px/1.5 var(--f-mono);
+}
+.log li {
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding-block: 3px; white-space: nowrap; animation: slide .35s ease-out;
+}
+.log li:nth-child(n+2) { color: var(--muted); }
+.log .tm { color: var(--faint); font-variant-numeric: tabular-nums; }
+.log .pr { font-weight: 500; }
+.log .pr.p1 { color: var(--warn); } .log .pr.p2 { color: var(--accent); } .log .pr.p3 { color: var(--pass); }
+.log .sj { overflow: hidden; text-overflow: ellipsis; }
+.log .to { color: var(--faint); }
+.log li:first-child .to { color: var(--ink); }
+@keyframes slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) { .log .tm { display: none; } .log li { grid-template-columns: auto minmax(0, 1fr) auto; } }
+
+/* ---------- timeline ---------- */
+.gantt { --lab: 240px; position: relative; }
+.g-axis { position: relative; height: 26px; margin-left: var(--lab); }
+.g-axis span { position: absolute; top: 0; font: 400 11.5px/1 var(--f-mono); color: var(--faint); transform: translateX(4px); }
+.g-row { display: grid; grid-template-columns: var(--lab) minmax(0, 1fr); align-items: center; border-top: 1px solid var(--line); }
+.gantt { border-bottom: 1px solid var(--line); }
+.g-lab { padding: 12px 16px 12px 0; min-width: 0; }
+.g-lab b { display: block; font-weight: 600; font-size: 15px; line-height: 1.3; }
+.g-lab span { font: 400 11.5px/1.5 var(--f-mono); color: var(--muted); }
+.g-track {
+  position: relative; height: 60px;
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+  background-size: calc(100% / var(--Y, 8)) 100%;
+}
+.g-bar {
+  position: absolute; top: 50%; height: 14px; border-radius: 4px;
+  left: calc(var(--s) / var(--N, 96) * 100%); width: calc((var(--e) - var(--s)) / var(--N, 96) * 100%);
+  transform: translateY(-50%); transform-origin: left center;
+}
+.g-bar.work { background: var(--accent); }
+.g-bar.proj { border: 1.5px solid var(--accent); background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 45%, transparent) 0 2px, transparent 2px 6px); }
+.g-bar.study { background: color-mix(in srgb, var(--ink) 24%, transparent); }
+.gantt.play .g-bar { animation: grow 1s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i) * 140ms); }
+@keyframes grow { from { transform: translateY(-50%) scaleX(0); } to { transform: translateY(-50%) scaleX(1); } }
+.g-now {
+  position: absolute; top: 20px; bottom: 0; width: 0; pointer-events: none;
+  left: calc(var(--lab) + (100% - var(--lab)) * 93 / 96);
+  border-left: 1.5px dashed var(--warn);
+}
+.g-now span {
+  position: absolute; top: -20px; left: 0; transform: translateX(-50%);
+  font: 500 10.5px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--warn);
+  background: var(--bg); padding: 2px 4px;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; font: 400 12px/1 var(--f-mono); color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 22px; height: 10px; border-radius: 3px; }
+@media (max-width: 720px) {
+  .gantt { --lab: 0px; }
+  .g-row { grid-template-columns: minmax(0, 1fr); }
+  .g-lab { padding: 14px 0 0; }
+  .g-track { height: 40px; }
+  .g-now span { display: none; }
+}
+
+.roles { margin-top: clamp(48px, 6vw, 72px); }
+.role {
+  display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 12px 24px;
+  padding-block: 32px; border-top: 1px solid var(--line);
+}
+.role:last-child { border-bottom: 1px solid var(--line); }
+.role-when { display: grid; gap: 4px; align-content: start; }
+.role-when .d { font: 400 12.5px/1.5 var(--f-mono); color: var(--muted); }
+.role h3 { margin: 0 0 4px; font-size: clamp(24px, 2.6vw, 30px); }
+.role .org { color: var(--muted); font-size: 15px; }
+.role ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 68ch; }
+.role li { position: relative; padding-left: 20px; }
+.role li::before { content: ""; position: absolute; left: 0; top: .72em; width: 8px; height: 1.5px; background: var(--accent); }
+.role strong { font-weight: 600; }
+@media (max-width: 720px) { .role { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- toolkit ---------- */
+.kit { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.grp { padding: 24px 20px 26px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.grp h4 { margin: 0 0 14px; }
+.grp ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15.5px; }
+@media (max-width: 1000px) { .kit { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .kit { grid-template-columns: minmax(0, 1fr); } }
+
+.extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px; margin-top: clamp(48px, 6vw, 72px); }
+.extras h4 { margin: 0 0 16px; }
+.lang, .cert { display: grid; align-items: center; padding-block: 12px; border-bottom: 1px solid var(--line); gap: 16px; }
+.lang { grid-template-columns: 110px auto minmax(0, 1fr); }
+.lang:first-of-type, .cert:first-of-type { border-top: 1px solid var(--line); }
+.lang b, .cert b { font-weight: 600; }
+.meter { display: flex; gap: 4px; }
+.meter i { width: 20px; height: 6px; border-radius: 2px; background: var(--line); }
+.meter i.f { background: var(--accent); }
+.lang .lv, .cert .by { font: 400 12px/1.4 var(--f-mono); color: var(--muted); }
+.lang .lv { text-align: right; }
+.cert { grid-template-columns: minmax(0, 1fr) auto; }
+@media (max-width: 820px) { .extras { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- contact ---------- */
+.contact h2 { font-size: clamp(42px, 7vw, 96px); max-width: 15ch; line-height: .98; margin-top: 18px; }
+.contact p { margin: 24px 0 0; max-width: 52ch; color: var(--muted); font-size: 18px; }
+.email-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; margin-top: 36px; }
+.email {
+  font: 500 clamp(18px, 2.6vw, 30px)/1.3 var(--f-mono); letter-spacing: -.01em; text-decoration: none;
+  padding-bottom: 6px; border-bottom: 2px solid var(--accent); overflow-wrap: anywhere; min-width: 0;
+}
+
+footer .wrap {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px;
+  padding-block: 28px 40px; border-top: 1px solid var(--line);
+  font: 400 12px/1.5 var(--f-mono); color: var(--muted);
+}
+
+/* ---------- terminal ---------- */
+.term-wrap {
+  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: fade .2s ease-out;
+}
+@keyframes fade { from { opacity: 0; } }
+.term {
+  width: min(720px, 100%); height: min(480px, 80vh); display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 30px 80px -20px color-mix(in srgb, #000 45%, transparent);
+  font: 400 13.5px/1.6 var(--f-mono);
+  animation: pop .28s cubic-bezier(.2, .9, .3, 1.2);
+}
+@keyframes pop { from { transform: translateY(12px) scale(.98); opacity: 0; } }
+.term-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.term-head button { background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer; padding: 4px; }
+.term-head button:hover { color: var(--ink); }
+.term-out { flex: 1; overflow-y: auto; padding: 14px 16px 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term-out .c { color: var(--ink); }
+.term-out .dim { color: var(--muted); }
+.term-out .ac { color: var(--accent); }
+.term-out .ok { color: var(--pass); }
+.term-out .er { color: var(--warn); }
+.term-line { display: flex; align-items: center; gap: 10px; padding: 10px 16px 14px; }
+.term-line label { color: var(--accent); white-space: nowrap; }
+.term-line input {
+  flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--ink);
+  font: inherit; caret-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="cur cur-ring" aria-hidden="true"></div>
+<div class="cur cur-dot" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="mark" href="#top" aria-label="Ali Huzain, back to top"><span class="mark-glyph">AH</span>ali.huzain</a>
+    <nav class="nav" aria-label="Sections">
+      <a class="l" href="#work">Work</a>
+      <a class="l" href="#experience">Experience</a>
+      <a class="l" href="#toolkit">Toolkit</a>
+      <button class="btn btn-ghost btn-sm term-btn" type="button" id="openTerm" aria-haspopup="dialog">Terminal <kbd>/</kbd></button>
+      <button class="icon-btn" type="button" id="themeBtn" aria-label="Switch color theme">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Introduction">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="hero-meta eyebrow">
+        <span>AI Engineer · Software Engineer</span>
+        <span class="avail"><span class="pulse" aria-hidden="true"></span>Jr. Software Developer at Arkan Technology · Amman</span>
+      </div>
+
+      <h1 class="name" aria-label="Ali Huzain">
+        <span class="line" aria-hidden="true"><span class="ch" data-c="A">A</span><span class="ch" data-c="l">l</span><span class="ch" data-c="i">i</span></span>
+        <span class="line" aria-hidden="true"><span class="ch" data-c="H">H</span><span class="ch" data-c="u">u</span><span class="ch" data-c="z">z</span><span class="ch" data-c="a">a</span><span class="ch" data-c="i">i</span><span class="ch" data-c="n">n</span><span class="caret"></span></span>
+      </h1>
+
+      <div class="hero-foot">
+        <div class="field-cap">
+          <span id="capHint">Move your cursor through the field and over my name.</span>
+          <span>Cells reviewed this visit <b id="capRev">0</b> · flagged <b id="capFlag">0</b></span>
+          <span class="k">Press <kbd>/</kbd> to open the terminal</span>
+        </div>
+        <div>
+          <p class="lede">I build software at Arkan Technology in Amman. Before that, I reviewed and validated the data that trains large language models. I've also built workflow automations, support tooling and a live e-commerce platform with more than 1,000 customers.</p>
+          <div class="ctas">
+            <a class="btn btn-primary" href="#work" data-magnet>See my work <span class="arr" aria-hidden="true">→</span></a>
+            <button class="btn btn-ghost" type="button" data-copy="alihuzayen22@gmail.com" data-magnet>Copy email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="num"><span class="cnt" data-to="2">2</span><span class="u">+</span></div><div class="lbl">Years across AI data, full-stack builds and support</div></div>
+      <div class="stat"><div class="num"><span class="cnt" data-to="1000">1,000</span><span class="u">+</span></div><div class="lbl">Customers on the e-commerce platform I built</div></div>
+      <div class="stat"><div class="num"><span class="cnt" data-to="95">95</span><span class="u">%</span></div><div class="lbl">SLA compliance across every support channel</div></div>
+      <div class="stat"><div class="num"><span class="cnt" data-to="40">40</span><span class="u">%</span></div><div class="lbl">Shorter customer response time with my custom CRM</div></div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section class="sec" id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Selected work</span>
+        <h2 class="split">Built for real customers and real ticket queues.</h2>
+      </div>
+
+      <article class="project">
+        <div>
+          <div class="p-meta eyebrow">
+            <span>Full-stack developer</span><span>Feb 2024 – Jun 2025</span><span class="live"><i></i>Live</span>
+          </div>
+          <h3>E-commerce platform</h3>
+          <p class="p-desc">A live store serving more than 1,000 customers. I built the purchase, invoicing and order-tracking modules, a ticketing and CRM system from scratch, and role-based access for three customer tiers. I also wrote the test plans and a Newman API suite that catches bugs before they reach production.</p>
+          <ul class="outcomes">
+            <li><span class="m">40%</span><span>shorter customer response time after the custom ticketing and CRM system</span></li>
+            <li><span class="m">30%</span><span>higher operational efficiency from the invoicing, purchase and tracking modules</span></li>
+            <li><span class="m">3</span><span>access tiers (Regular, VIP and Staff) enforced with RBAC</span></li>
+          </ul>
+        </div>
+
+        <figure class="viz">
+          <div class="viz-top"><span class="f">order_flow <span>· every stage tested</span></span><span class="eyebrow">Illustration</span></div>
+          <div class="viz-scroll">
+            <svg id="flow" viewBox="0 0 600 190" role="img" aria-label="An order moves through sign in, cart, payment, invoice and tracking, and each stage's API test returns 200 OK.">
+              <line class="trk" x1="60" y1="96" x2="540" y2="96"/>
+              <line class="trk-on" id="flowOn" x1="60" y1="96" x2="60" y2="96"/>
+              <g class="stg" transform="translate(60 96)"><circle class="ring" r="20"/><circle class="core" r="4"/><text class="lb" y="46">Sign in</text><text class="ok" y="64">200 OK</text></g>
+              <g class="stg" transform="translate(180 96)"><circle class="ring" r="20"/><circle class="core" r="4"/><text class="lb" y="46">Cart</text><text class="ok" y="64">200 OK</text></g>
+              <g class="stg" transform="translate(300 96)"><circle class="ring" r="20"/><circle class="core" r="4"/><text class="lb" y="46">Payment</text><text class="ok" y="64">200 OK</text></g>
+              <g class="stg" transform="translate(420 96)"><circle class="ring" r="20"/><circle class="core" r="4"/><text class="lb" y="46">Invoice</text><text class="ok" y="64">200 OK</text></g>
+              <g class="stg" transform="translate(540 96)"><circle class="ring" r="20"/><circle class="core" r="4"/><text class="lb" y="46">Tracking</text><text class="ok" y="64">200 OK</text></g>
+              <g id="pk" transform="translate(540 96)">
+                <circle class="pk-halo" r="13"/><circle class="pk-dot" r="6"/>
+                <g class="pk-tag" transform="translate(0 -38)"><rect id="pkRect" x="-22" y="-11" width="44" height="20" rx="5"/><text id="pkText" y="3.5">VIP</text></g>
+              </g>
+            </svg>
+          </div>
+          <figcaption class="viz-note">Tags show the access tier of each order. Every stage maps to a core feature I covered with test cases and the Newman API suite.</figcaption>
+        </figure>
+      </article>
+
+      <article class="project">
+        <div>
+          <div class="p-meta eyebrow"><span>Personal project</span><span>Workflow automation</span></div>
+          <h3>Automated support ticketing</h3>
+          <p class="p-desc">An end-to-end support workflow built with n8n and Activepieces. Tickets arrive through a webhook, get a priority, and are routed or escalated across Slack, email and a database without anyone sorting the queue by hand.</p>
+          <ul class="outcomes">
+            <li><span class="m word">Prioritize</span><span>every incoming ticket is scored the moment it arrives</span></li>
+            <li><span class="m word">Route</span><span>tickets go to the right channel based on that priority</span></li>
+            <li><span class="m word">Escalate</span><span>urgent issues reach the team in real time over webhooks</span></li>
+          </ul>
+          <ul class="stack" aria-label="Stack">
+            <li>n8n</li><li>Activepieces</li><li>Webhooks</li><li>REST APIs</li><li>Slack</li><li>Email</li><li>Database</li>
+          </ul>
+        </div>
+
+        <figure class="viz">
+          <div class="viz-top">
+            <span class="f">ticket-router <span>· workflow</span></span>
+            <button class="btn btn-ghost btn-sm" type="button" id="sendTicket">Send a test ticket</button>
+          </div>
+          <div class="viz-scroll">
+            <svg id="wf" viewBox="0 0 680 290" role="img" aria-label="Workflow: webhook, then prioritize, then route to escalate in Slack, notify by email, or log to a database.">
+              <path class="edge" id="e0" d="M128 145 H178"/>
+              <path class="edge" id="e1" d="M296 145 H346"/>
+              <path class="edge" id="o1" d="M464 145 C498 145 498 52 532 52"/>
+              <path class="edge" id="o2" d="M464 145 H532"/>
+              <path class="edge" id="o3" d="M464 145 C498 145 498 238 532 238"/>
+
+              <g class="node" id="n0" transform="translate(10 122)"><rect width="118" height="46" rx="10"/><text class="t" x="14" y="20">Webhook</text><text class="s" x="14" y="36">POST /ticket</text></g>
+              <g class="node" id="n1" transform="translate(178 122)"><rect width="118" height="46" rx="10"/><text class="t" x="14" y="20">Prioritize</text><text class="s" x="14" y="36">P1 · P2 · P3</text></g>
+              <g class="node" id="n2" transform="translate(346 122)"><rect width="118" height="46" rx="10"/><text class="t" x="14" y="20">Route</text><text class="s" x="14" y="36">by priority</text></g>
+              <g class="node" id="q1" transform="translate(532 29)"><rect width="138" height="46" rx="10"/><text class="t" x="14" y="20">Escalate</text><text class="s" x="14" y="36">Slack alert</text></g>
+              <g class="node" id="q2" transform="translate(532 122)"><rect width="138" height="46" rx="10"/><text class="t" x="14" y="20">Notify</text><text class="s" x="14" y="36">Email to agent</text></g>
+              <g class="node" id="q3" transform="translate(532 215)"><rect width="138" height="46" rx="10"/><text class="t" x="14" y="20">Log</text><text class="s" x="14" y="36">Database queue</text></g>
+
+              <path id="r1" d="M69 145 H464 C498 145 498 52 532 52 H601" fill="none" stroke="none"/>
+              <path id="r2" d="M69 145 H601" fill="none" stroke="none"/>
+              <path id="r3" d="M69 145 H464 C498 145 498 238 532 238 H601" fill="none" stroke="none"/>
+              <g id="tks"></g>
+            </svg>
+          </div>
+          <ul class="log" id="log" aria-live="polite">
+            <li><span class="tm">09:14:02</span><span class="pr p1">P1</span><span class="sj">Payment failed at checkout</span><span class="to">→ Slack</span></li>
+            <li><span class="tm">09:13:47</span><span class="pr p3">P3</span><span class="sj">Request a copy of an invoice</span><span class="to">→ Database</span></li>
+            <li><span class="tm">09:13:31</span><span class="pr p2">P2</span><span class="sj">Order stuck in processing</span><span class="to">→ Email</span></li>
+          </ul>
+          <figcaption class="viz-note">These are sample tickets. The paths show how the workflow prioritizes, routes and escalates each one.</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="sec" id="experience" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Experience</span>
+        <h2 class="split">My path so far, drawn to scale.</h2>
+      </div>
+
+      <div class="gantt" id="gantt">
+        <div class="g-axis" aria-hidden="true">
+          <span style="left:0%">2019</span><span style="left:12.5%">2020</span><span style="left:25%">2021</span><span style="left:37.5%">2022</span>
+          <span style="left:50%">2023</span><span style="left:62.5%">2024</span><span style="left:75%">2025</span><span style="left:87.5%">2026</span>
+        </div>
+        <div class="g-row"><div class="g-lab"><b>B.Sc. Software Engineering</b><span>Sep 2019 – Jul 2024</span></div><div class="g-track"><i class="g-bar study" style="--s:8;--e:67;--i:0"></i></div></div>
+        <div class="g-row"><div class="g-lab"><b>E-commerce platform</b><span>Feb 2024 – Jun 2025</span></div><div class="g-track"><i class="g-bar proj" style="--s:61;--e:78;--i:1"></i></div></div>
+        <div class="g-row"><div class="g-lab"><b>TabSense · Support</b><span>Jul 2024 – Dec 2024</span></div><div class="g-track"><i class="g-bar work" style="--s:66;--e:72;--i:2"></i></div></div>
+        <div class="g-row"><div class="g-lab"><b>MENADevs · AI Engineer</b><span>Oct 2024 – Apr 2026</span></div><div class="g-track"><i class="g-bar work" style="--s:69;--e:88;--i:3"></i></div></div>
+        <div class="g-row"><div class="g-lab"><b>Arkan Technology · Jr. Developer</b><span>Sep 2026 – Present</span></div><div class="g-track"><i class="g-bar work" id="gArkan" style="--s:92;--e:94;--i:4"></i></div></div>
+        <div class="g-now" id="gNow" aria-hidden="true"><span>Today</span></div>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--accent)"></i>Role</span>
+        <span><i style="border:1.5px solid var(--accent);background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--accent) 45%,transparent) 0 2px,transparent 2px 6px)"></i>Project</span>
+        <span><i style="background:color-mix(in srgb,var(--ink) 24%,transparent)"></i>Study</span>
+      </div>
+
+      <div class="roles">
+        <div class="role">
+          <div class="role-when"><span class="d">Sep 2026 – Present</span><span class="d">Amman</span><span class="d live"><i></i>Current role</span></div>
+          <div>
+            <h3>Jr. Software Developer</h3><div class="org">Arkan Technology</div>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-when"><span class="d">Oct 2024 – Apr 2026</span><span class="d">Jordan</span></div>
+          <div>
+            <h3>AI Engineer</h3><div class="org">MENADevs</div>
+            <ul>
+              <li>Reviewed and validated contributor outputs for AI and LLM training pipelines in <strong>Python, Java, Swift and Go</strong>, enforcing quality guidelines and improving module efficiency.</li>
+              <li>Contributed to backend application logic and prompt evaluation workflows.</li>
+              <li>Designed and ran data preparation and labeling validation processes for large-scale ML datasets.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-when"><span class="d">Jul 2024 – Dec 2024</span><span class="d">Jordan</span></div>
+          <div>
+            <h3>Technical Support Specialist</h3><div class="org">TabSense</div>
+            <ul>
+              <li>Kept <strong>95% SLA compliance</strong> across all support channels while managing inbound issues through CRM and ticketing systems.</li>
+              <li>Cut average resolution time by <strong>20%</strong> by diagnosing first-level problems and escalating complex cases to the right people.</li>
+              <li>Earned a <strong>90% customer satisfaction</strong> score across tickets, phone and email.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-when"><span class="d">Sep 2019 – Jul 2024</span><span class="d">Amman</span></div>
+          <div>
+            <h3>Bachelor of Software Engineering</h3><div class="org">Applied Science Private University</div>
+            <ul><li>Coursework in software architecture, algorithms, databases, web development and AI fundamentals.</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLKIT -->
+  <section class="sec" id="toolkit" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Toolkit</span>
+        <h2 class="split">What I work with.</h2>
+      </div>
+      <div class="kit">
+        <div class="grp"><h4 class="eyebrow">Languages</h4><ul><li>Python</li><li>JavaScript</li><li>Java</li><li>C#</li><li>SQL</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">AI / ML</h4><ul><li>LLM training pipelines</li><li>Prompt engineering</li><li>Data labeling &amp; validation</li><li>AI workflow management</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Automation</h4><ul><li>n8n</li><li>Activepieces</li><li>Zapier</li><li>Webhooks</li><li>API integration</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Frameworks</h4><ul><li>.NET</li><li>Node.js</li><li>HTML / CSS</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Testing</h4><ul><li>Selenium</li><li>PyTest</li><li>Newman</li><li>Test plans in Agile sprints</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Support</h4><ul><li>Zendesk</li><li>HubSpot</li><li>CRM systems</li><li>SLA &amp; KPI management</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Concepts</h4><ul><li>System design</li><li>RBAC</li><li>Business logic</li><li>Networking fundamentals</li></ul></div>
+        <div class="grp"><h4 class="eyebrow">Workflow</h4><ul><li>Git</li><li>GitHub</li><li>Agile</li></ul></div>
+      </div>
+
+      <div class="extras">
+        <div>
+          <h4 class="eyebrow">Languages spoken</h4>
+          <div class="lang"><b>Arabic</b><span class="meter" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span><span class="lv">Native</span></div>
+          <div class="lang"><b>English</b><span class="meter" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span><span class="lv">Advanced</span></div>
+          <div class="lang"><b>Spanish</b><span class="meter" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></span><span class="lv">Intermediate</span></div>
+        </div>
+        <div>
+          <h4 class="eyebrow">Certificates</h4>
+          <div class="cert"><b>Programming Essentials in Python</b><span class="by">Python Institute</span></div>
+          <div class="cert"><b>Network Basics</b><span class="by">Cisco</span></div>
+          <div class="cert"><b>Operating System Basics</b><span class="by">Cisco</span></div>
+          <div class="cert"><b>Foundational C#</b><span class="by">Microsoft</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec contact" id="contact" style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow">Contact</span>
+      <h2 class="split">Hiring for AI, automation or full-stack work?</h2>
+      <p>I'm a Jr. Software Developer at Arkan Technology in Amman, Jordan. For projects, collaborations or opportunities, email is the fastest way to reach me.</p>
+      <div class="email-row">
+        <a class="email" id="emailText" href="mailto:alihuzayen22@gmail.com">alihuzayen22@gmail.com</a>
+        <button class="btn btn-primary" type="button" data-copy="alihuzayen22@gmail.com" data-magnet>Copy email</button>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/alihuzain" target="_blank" rel="noopener" data-magnet>LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a class="btn btn-ghost" href="https://github.com/AliHuzain" target="_blank" rel="noopener" data-magnet>GitHub <span class="arr" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr">2026</span> Ali Huzain</span>
+    <span>Amman, Jordan · <a href="https://www.linkedin.com/in/alihuzain" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/AliHuzain" target="_blank" rel="noopener">GitHub</a></span>
+  </div>
+</footer>
+
+<div class="term-wrap" id="termWrap" hidden>
+  <div class="term" role="dialog" aria-modal="true" aria-label="Portfolio terminal">
+    <div class="term-head"><span>ali@amman: ~/portfolio</span><button type="button" id="closeTerm">esc · close</button></div>
+    <div class="term-out" id="termOut" aria-live="polite"></div>
+    <form class="term-line" id="termForm" autocomplete="off">
+      <label for="termIn">ali@amman:~$</label>
+      <input id="termIn" type="text" spellcheck="false" autocapitalize="off" aria-label="Command">
+    </form>
+  </div>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const root = document.documentElement;
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  function onView(el, fn) {
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    const io = new IntersectionObserver((es) => {
+      if (es.some(e => e.isIntersecting)) { io.disconnect(); fn(); }
+    }, { rootMargin: '0px 0px -12% 0px' });
+    io.observe(el);
+  }
+  function whileVisible(el, cb) {
+    if (!('IntersectionObserver' in window)) { cb(true); return; }
+    new IntersectionObserver((es) => cb(es[0].isIntersecting)).observe(el);
+  }
+
+  /* ---------- theme ---------- */
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  function toggleTheme() {
+    const next = isDark() ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    return next;
+  }
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+  /* ---------- copy email ---------- */
+  function copyEmail(btn) {
+    const val = 'alihuzayen22@gmail.com';
+    const label = btn ? btn.textContent : '';
+    const done = (t) => { if (!btn) return; btn.textContent = t; setTimeout(() => { btn.textContent = label; }, 1800); };
+    const fallback = () => {
+      const el = document.getElementById('emailText');
+      const r = document.createRange(); r.selectNodeContents(el);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      done('Press Ctrl+C');
+    };
+    try { return navigator.clipboard.writeText(val).then(() => { done('Copied'); return true; }, () => { fallback(); return false; }); }
+    catch (e) { fallback(); return Promise.resolve(false); }
+  }
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => copyEmail(btn)));
+
+  /* ---------- scroll progress ---------- */
+  const prog = document.getElementById('progress');
+  let pr = 0;
+  const setProg = () => { pr = 0; const h = root.scrollHeight - innerHeight; prog.style.setProperty('--p', h > 0 ? (scrollY / h).toFixed(4) : 0); };
+  addEventListener('scroll', () => { if (!pr) pr = requestAnimationFrame(setProg); }, { passive: true });
+  setProg();
+
+  /* ---------- headline word reveal ---------- */
+  document.querySelectorAll('h2.split').forEach(h => {
+    const words = h.textContent.trim().split(/\s+/);
+    h.textContent = '';
+    words.forEach((w, i) => {
+      const s = document.createElement('span'); s.className = 'w'; s.style.setProperty('--i', i); s.textContent = w;
+      h.append(s, i < words.length - 1 ? ' ' : '');
+    });
+    if (reduce) return;
+    const r = h.getBoundingClientRect();
+    if (r.top > innerHeight * .88) { h.classList.add('dim'); onView(h, () => h.classList.remove('dim')); }
+  });
+
+  /* ---------- custom cursor + magnet + tilt ---------- */
+  const ring = document.querySelector('.cur-ring'), dot = document.querySelector('.cur-dot');
+  if (fine && !reduce) {
+    document.body.classList.add('has-cursor');
+    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y, seen = false;
+    addEventListener('pointermove', (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!seen) { seen = true; rx = x; ry = y; document.body.classList.remove('cur-hide'); }
+      dot.style.transform = `translate(${x}px, ${y}px)`;
+      const t = e.target.closest ? e.target : null;
+      ring.classList.toggle('big', !!(t && t.closest('a, button, [data-magnet]')));
+      ring.classList.toggle('huge', !!(t && t.closest('.name')));
+    }, { passive: true });
+    document.addEventListener('pointerleave', () => { seen = false; document.body.classList.add('cur-hide'); });
+    (function follow() {
+      rx += (x - rx) * .18; ry += (y - ry) * .18;
+      ring.style.transform = `translate(${rx.toFixed(1)}px, ${ry.toFixed(1)}px)`;
+      requestAnimationFrame(follow);
+    })();
+
+    document.querySelectorAll('[data-magnet]').forEach(el => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        el.style.transform = `translate(${dx * .28}px, ${dy * .36}px)`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+    });
+
+    document.querySelectorAll('.viz').forEach(v => {
+      v.addEventListener('pointermove', (e) => {
+        const r = v.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        v.classList.add('tilting');
+        v.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        v.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        v.style.setProperty('--ry', ((px - .5) * 5).toFixed(2) + 'deg');
+        v.style.setProperty('--rx', ((.5 - py) * 5).toFixed(2) + 'deg');
+      });
+      v.addEventListener('pointerleave', () => {
+        v.classList.remove('tilting');
+        v.style.setProperty('--rx', '0deg'); v.style.setProperty('--ry', '0deg');
+      });
+    });
+  } else {
+    ring.remove(); dot.remove();
+  }
+
+  /* ---------- glyph field ---------- */
+  const field = (function () {
+    const hero = document.querySelector('.hero');
+    const cv = document.getElementById('field');
+    if (!cv || !cv.getContext) return {};
+    const ctx = cv.getContext('2d');
+    const capRev = document.getElementById('capRev'), capFlag = document.getElementById('capFlag');
+    const G = '01{}[]<>/=+-*;:#%&?$abcdefijkxyz'.split('');
+    const pick = () => G[(Math.random() * G.length) | 0];
+    let W = 0, H = 0, S = 24, cols = 0, rows = 0, cells = [], col = {};
+    let mx = -9999, my = -9999, visible = true, raf = 0, lastCap = 0;
+    let sweepOn = false, sweepT0 = 0, nextSweep = performance.now() + 900, lastCol = -1;
+    let reviewed = 0, flagged = 0;
+
+    if (!fine) document.getElementById('capHint').textContent = 'Drag across the field to inspect it.';
+
+    function readColors() {
+      const s = getComputedStyle(root);
+      ['ink', 'muted', 'accent', 'warn'].forEach(k => { col[k] = s.getPropertyValue('--' + k).trim(); });
+    }
+    function size() {
+      const r = hero.getBoundingClientRect();
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      S = W < 640 ? 20 : 24;
+      cols = Math.ceil(W / S); rows = Math.ceil(H / S);
+      cells = new Array(cols * rows);
+      for (let i = 0; i < cells.length; i++) cells[i] = { c: pick(), a: .05 + Math.random() * .1, h: 0, m: 0, t: 0 };
+      ctx.font = `500 ${Math.round(S * .5)}px "JetBrains Mono", ui-monospace, Consolas, monospace`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      lastCol = -1;
+    }
+    function draw(now) {
+      let sx = -1;
+      if (!reduce) {
+        if (!sweepOn && now > nextSweep) { sweepOn = true; sweepT0 = now; lastCol = -1; }
+        if (sweepOn) {
+          const p = (now - sweepT0) / 3000;
+          if (p >= 1) { sweepOn = false; nextSweep = now + 3800; }
+          else {
+            sx = p * (W + S);
+            const c = Math.min(cols - 1, Math.floor(sx / S));
+            for (let k = lastCol + 1; k <= c; k++) {
+              for (let r = 0; r < rows; r++) {
+                const cell = cells[r * cols + k];
+                reviewed++;
+                if (Math.random() < .022) { cell.m = 2; cell.t = 1; flagged++; } else { cell.m = 1; cell.t = 1; }
+              }
+            }
+            lastCol = Math.max(lastCol, c);
+          }
+        }
+      }
+      ctx.clearRect(0, 0, W, H);
+      const R = W < 640 ? 90 : 150, R2 = R * R;
+      for (let r = 0; r < rows; r++) {
+        const y = r * S + S / 2;
+        for (let c = 0; c < cols; c++) {
+          const cell = cells[r * cols + c], x = c * S + S / 2;
+          const dx = x - mx, dy = y - my, d2 = dx * dx + dy * dy;
+          if (d2 < R2) {
+            const h = 1 - Math.sqrt(d2) / R;
+            if (h > cell.h) cell.h = h;
+            if (Math.random() < h * .22) cell.c = pick();
+          }
+          let a = cell.a, fill = col.muted, ch = cell.c;
+          if (cell.t > 0) {
+            if (cell.m === 2) { fill = col.warn; ch = '×'; a = Math.max(a, .25 + cell.t * .7); cell.t -= .005; }
+            else { fill = col.accent; a = Math.max(a, cell.t * .6); cell.t -= .022; }
+            if (cell.t <= 0) { cell.t = 0; cell.m = 0; if (Math.random() < .35) cell.c = pick(); }
+          }
+          if (cell.h > .01) {
+            a = Math.min(1, a + cell.h * .75);
+            if (cell.m === 0) fill = col.ink;
+            cell.h *= .93;
+          }
+          ctx.globalAlpha = a; ctx.fillStyle = fill;
+          ctx.fillText(ch, x, y);
+        }
+      }
+      if (sx >= 0) {
+        ctx.fillStyle = col.accent;
+        ctx.globalAlpha = .07; ctx.fillRect(sx - 48, 0, 48, H);
+        ctx.globalAlpha = .65; ctx.fillRect(sx, 0, 1.5, H);
+      }
+      ctx.globalAlpha = 1;
+      if (now - lastCap > 200) {
+        lastCap = now;
+        capRev.textContent = reviewed.toLocaleString('en-US');
+        capFlag.textContent = flagged.toLocaleString('en-US');
+      }
+    }
+    function loop(now) { raf = 0; draw(now); if (visible && !document.hidden) raf = requestAnimationFrame(loop); }
+    function kick() { if (!raf && visible && !document.hidden && !reduce) raf = requestAnimationFrame(loop); }
+
+    readColors(); size();
+    fontsReady.then(() => { size(); if (reduce) draw(performance.now()); });
+    const move = (e) => { const r = hero.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; if (reduce) draw(performance.now()); };
+    hero.addEventListener('pointermove', move, { passive: true });
+    hero.addEventListener('pointerdown', move, { passive: true });
+    hero.addEventListener('pointerleave', () => { mx = my = -9999; });
+    let rz = 0;
+    new ResizeObserver(() => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { size(); if (reduce) draw(performance.now()); }); }).observe(hero);
+    whileVisible(hero, (v) => { visible = v; kick(); });
+    document.addEventListener('visibilitychange', kick);
+    const retheme = () => { readColors(); if (reduce) draw(performance.now()); };
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
+    new MutationObserver(retheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    if (reduce) { draw(performance.now()); document.getElementById('capHint').textContent = 'Motion is reduced, so the sweep is paused.'; }
+    else kick();
+    return { sweep() { sweepOn = true; sweepT0 = performance.now(); lastCol = -1; kick(); }, stats: () => [reviewed, flagged] };
+  })();
+
+  /* ---------- name: decode + variable-weight proximity ---------- */
+  const nameFx = (function () {
+    const h = document.querySelector('.name');
+    if (!h || reduce) return {};
+    const hero = document.querySelector('.hero');
+    const chs = [...h.querySelectorAll('.ch')];
+    const sets = { narrow: 'il1!|ftj', upper: 'ABDEHKMNPRSUVXZ', lower: 'abcdeghknopqrsuvxyz' };
+    const setFor = (c) => /[il]/.test(c) ? sets.narrow : /[A-Z]/.test(c) ? sets.upper : sets.lower;
+    let busy = false;
+    function decode() {
+      if (busy) return; busy = true;
+      chs.forEach(s => { s.style.width = s.getBoundingClientRect().width + 'px'; });
+      const t0 = performance.now();
+      (function step(now) {
+        let done = true;
+        chs.forEach((s, i) => {
+          if (now < t0 + 260 + i * 70) {
+            done = false;
+            if (Math.random() < .45) { const set = setFor(s.dataset.c); s.textContent = set[(Math.random() * set.length) | 0]; }
+          } else if (s.textContent !== s.dataset.c) s.textContent = s.dataset.c;
+        });
+        if (!done) requestAnimationFrame(step);
+        else { chs.forEach(s => { s.style.width = ''; }); busy = false; }
+      })(t0);
+    }
+    fontsReady.then(decode);
+    h.addEventListener('click', decode);
+
+    // Letters near the pointer thin out; the rest stay heavy.
+    if (fine) {
+      const cur = chs.map(() => 780), tgt = chs.map(() => 780);
+      let px = -9999, py = -9999, raf = 0;
+      function tick() {
+        raf = 0; let moving = false;
+        chs.forEach((s, i) => {
+          if (!busy) {
+            const r = s.getBoundingClientRect();
+            const d = Math.hypot(px - (r.left + r.width / 2), py - (r.top + r.height / 2));
+            tgt[i] = 780 - 560 * Math.max(0, 1 - d / 340);
+          }
+          cur[i] += (tgt[i] - cur[i]) * .16;
+          if (Math.abs(tgt[i] - cur[i]) > .5) moving = true;
+          s.style.setProperty('--w', cur[i].toFixed(0));
+        });
+        if (moving) raf = requestAnimationFrame(tick);
+      }
+      hero.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(tick); }, { passive: true });
+      hero.addEventListener('pointerleave', () => { px = py = -9999; if (!raf) raf = requestAnimationFrame(tick); });
+    }
+    return { decode };
+  })();
+
+  /* ---------- counters ---------- */
+  if (!reduce) document.querySelectorAll('.cnt').forEach(el => {
+    onView(el, () => {
+      const to = +el.dataset.to, t0 = performance.now(), D = 1500;
+      (function s(now) {
+        const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(to * e).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(s);
+      })(t0);
+    });
+  });
+
+  /* ---------- timeline ---------- */
+  (function () {
+    const g = document.getElementById('gantt');
+    const d = new Date(), m = (d.getFullYear() - 2019) * 12 + d.getMonth() + d.getDate() / 31;
+    // The axis always runs from 2019 through the end of the current year.
+    const years = Math.max(8, d.getFullYear() - 2019 + 1), N = years * 12;
+    g.style.setProperty('--N', N); g.style.setProperty('--Y', years);
+    const axis = g.querySelector('.g-axis'); axis.textContent = '';
+    for (let y = 0; y < years; y++) {
+      const s = document.createElement('span'); s.style.left = (y / years * 100).toFixed(3) + '%'; s.textContent = 2019 + y; axis.append(s);
+    }
+    document.getElementById('gNow').style.left = `calc(var(--lab) + (100% - var(--lab)) * ${m.toFixed(2)} / ${N})`;
+    // The current role runs up to today.
+    document.getElementById('gArkan').style.setProperty('--e', Math.max(93, m).toFixed(2));
+    if (!reduce) onView(g, () => g.classList.add('play'));
+  })();
+
+  /* ---------- order flow ---------- */
+  (function flow() {
+    const svg = document.getElementById('flow');
+    const stages = [...svg.querySelectorAll('.stg')];
+    const xs = [60, 180, 300, 420, 540];
+    const pk = document.getElementById('pk'), on = document.getElementById('flowOn');
+    const rect = document.getElementById('pkRect'), txt = document.getElementById('pkText');
+    const tiers = [['Regular', 60], ['VIP', 40], ['Staff', 48]];
+    const STEP = 900, DWELL = 380, END = 4900;
+    let tier = 0, t0 = 0, raf = 0, visible = false;
+    function setTier() { const [n, w] = tiers[tier]; txt.textContent = n; rect.setAttribute('x', -w / 2); rect.setAttribute('width', w); }
+    function place(x, op) { pk.setAttribute('transform', `translate(${x.toFixed(1)} 96)`); pk.style.opacity = op; on.setAttribute('x2', x.toFixed(1)); }
+    if (reduce) { stages.forEach(s => s.classList.add('done')); place(540, 1); setTier(); return; }
+    const ease = (p) => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    function frame(now) {
+      raf = 0;
+      let t = now - t0;
+      if (t > END) { t0 = now; t = 0; tier = (tier + 1) % tiers.length; setTier(); stages.forEach(s => s.classList.remove('done', 'on')); }
+      const k = Math.min(4, Math.floor(t / STEP)), r = t - k * STEP;
+      let x = xs[k];
+      if (k < 4 && r >= DWELL) x = xs[k] + (xs[k + 1] - xs[k]) * ease((r - DWELL) / (STEP - DWELL));
+      stages.forEach((s, j) => { s.classList.toggle('on', j === k && r < DWELL); if (t >= j * STEP + 220) s.classList.add('done'); });
+      place(x, t < 160 ? t / 160 : t > END - 500 ? Math.max(0, (END - t) / 500) : 1);
+      if (visible && !document.hidden) raf = requestAnimationFrame(frame);
+    }
+    setTier();
+    whileVisible(svg, (v) => {
+      visible = v;
+      if (v && !raf) { if (!t0) { t0 = performance.now(); stages.forEach(s => s.classList.remove('done')); } raf = requestAnimationFrame(frame); }
+    });
+    document.addEventListener('visibilitychange', () => { if (visible && !raf && !document.hidden) raf = requestAnimationFrame(frame); });
+  })();
+
+  /* ---------- ticket router ---------- */
+  const router = (function () {
+    const svg = document.getElementById('wf');
+    const layer = document.getElementById('tks'), log = document.getElementById('log'), btn = document.getElementById('sendTicket');
+    const NS = 'http://www.w3.org/2000/svg';
+    const routes = { 1: document.getElementById('r1'), 2: document.getElementById('r2'), 3: document.getElementById('r3') };
+    const dest = { 1: ['q1', 'Slack', 'o1'], 2: ['q2', 'Email', 'o2'], 3: ['q3', 'Database', 'o3'] };
+    const nodes = { n0: [10, 128], n1: [178, 296], n2: [346, 464] };
+    const ids = ['n0', 'n1', 'n2', 'q1', 'q2', 'q3', 'e0', 'e1', 'o1', 'o2', 'o3'];
+    const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const samples = {
+      1: ['Payment failed at checkout', 'Login returns a server error', 'Orders not reaching the warehouse'],
+      2: ['Order stuck in processing', 'Invoice shows the wrong total', 'VIP discount not applied'],
+      3: ['Request a copy of an invoice', 'Change delivery address', 'Question about Staff access'],
+    };
+    const tickets = [];
+    let raf = 0, visible = false, timer = 0, last = 0;
+    const prio = () => { const r = Math.random(); return r < .25 ? 1 : r < .62 ? 2 : 3; };
+    const clock = () => new Date().toLocaleTimeString('en-GB', { hour12: false });
+    function addLog(p, subject) {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="tm"></span><span class="pr p${p}">P${p}</span><span class="sj"></span><span class="to"></span>`;
+      li.querySelector('.tm').textContent = clock();
+      li.querySelector('.sj').textContent = subject;
+      li.querySelector('.to').textContent = '→ ' + dest[p][1];
+      log.prepend(li);
+      while (log.children.length > 4) log.lastElementChild.remove();
+      const q = els[dest[p][0]];
+      q.classList.add('hit', 'hot'); setTimeout(() => q.classList.remove('hit', 'hot'), 650);
+    }
+    function send(forceP, forceSubject) {
+      const p = forceP || prio();
+      const subject = forceSubject || samples[p][(Math.random() * samples[p].length) | 0];
+      if (reduce) { addLog(p, subject); return p; }
+      const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'tk');
+      const c = document.createElementNS(NS, 'circle'); c.setAttribute('r', 7); c.setAttribute('class', 'p' + p);
+      const t = document.createElementNS(NS, 'text'); t.setAttribute('y', -13); t.setAttribute('class', 'p' + p); t.textContent = 'P' + p;
+      g.append(c, t); layer.append(g);
+      const path = routes[p], len = path.getTotalLength();
+      tickets.push({ g, p, path, len, t0: performance.now(), dur: len / .3, subject });
+      if (!raf) raf = requestAnimationFrame(frame);
+      return p;
+    }
+    function frame(now) {
+      raf = 0;
+      const hot = new Set();
+      for (let i = tickets.length - 1; i >= 0; i--) {
+        const k = tickets[i];
+        const p = Math.min(1, (now - k.t0) / k.dur);
+        const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+        const pt = k.path.getPointAtLength(e * k.len);
+        k.g.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+        for (const id in nodes) if (pt.x >= nodes[id][0] && pt.x <= nodes[id][1]) hot.add(id);
+        if (pt.x > 128 && pt.x < 178) hot.add('e0');
+        else if (pt.x > 296 && pt.x < 346) hot.add('e1');
+        else if (pt.x > 464 && pt.x < 532) hot.add(dest[k.p][2]);
+        else if (pt.x >= 532) hot.add(dest[k.p][0]);
+        if (p >= 1) { k.g.remove(); tickets.splice(i, 1); addLog(k.p, k.subject); }
+      }
+      ids.forEach(id => { if (!els[id].classList.contains('hit')) els[id].classList.toggle('hot', hot.has(id)); });
+      if (tickets.length) raf = requestAnimationFrame(frame);
+    }
+    btn.addEventListener('click', () => { send(); last = performance.now(); });
+    if (!reduce) {
+      const auto = () => {
+        clearTimeout(timer);
+        if (!visible || document.hidden) return;
+        if (performance.now() - last > 1500) send();
+        timer = setTimeout(auto, 2600);
+      };
+      whileVisible(svg, (v) => { visible = v; if (v) auto(); else clearTimeout(timer); });
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && visible) auto(); });
+    }
+    return { send: (p, s) => { last = performance.now(); return send(p, s); } };
+  })();
+
+  /* ---------- terminal ---------- */
+  (function terminal() {
+    const wrap = document.getElementById('termWrap'), out = document.getElementById('termOut');
+    const form = document.getElementById('termForm'), input = document.getElementById('termIn');
+    const openBtn = document.getElementById('openTerm');
+    const hist = []; let hi = 0, booted = false, lastFocus = null;
+    const esc = (s) => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const print = (html, cls) => { const d = document.createElement('div'); if (cls) d.className = cls; d.innerHTML = html; out.append(d); out.scrollTop = out.scrollHeight; };
+    const go = (id) => { close(); setTimeout(() => document.getElementById(id).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }), 60); };
+
+    const cmds = {
+      help: () => print(
+`<span class="c">Available commands</span>
+  <span class="ac">whoami</span>        who I am
+  <span class="ac">projects</span>      what I've built
+  <span class="ac">experience</span>    where I've worked
+  <span class="ac">skills</span>        my toolkit
+  <span class="ac">contact</span>       how to reach me
+  <span class="ac">copy</span>          copy my email address
+  <span class="ac">linkedin</span>      open my LinkedIn profile
+  <span class="ac">ticket</span>        send a ticket through the router demo
+  <span class="ac">sweep</span>         run a validation sweep on the hero
+  <span class="ac">open</span> &lt;section&gt; jump to work, experience, toolkit or contact
+  <span class="ac">theme</span>         switch light and dark
+  <span class="ac">clear</span>         clear the screen
+  <span class="ac">exit</span>          close the terminal
+<span class="dim">Tab completes, ↑ and ↓ walk your history.</span>`),
+      whoami: () => print(`<span class="c">Ali Huzain</span>
+Jr. Software Developer at Arkan Technology in Amman, Jordan.
+Previously an AI Engineer. 2+ years across LLM training data, full-stack builds and technical support.
+Arabic (native) · English (advanced) · Spanish (intermediate)`),
+      projects: () => print(`<span class="c">01  E-commerce platform</span>   <span class="ok">● live</span>
+    1,000+ customers · custom ticketing &amp; CRM (−40% response time)
+    RBAC for Regular, VIP and Staff · invoicing, purchase, tracking (+30% efficiency)
+<span class="c">02  Automated support ticketing</span>
+    n8n + Activepieces · webhooks · Slack, email and database routing
+<span class="dim">Try </span><span class="ac">ticket</span><span class="dim"> or </span><span class="ac">open work</span>`),
+      experience: () => print(`<span class="c">Jr. Software Developer</span> · Arkan Technology <span class="dim">Sep 2026 – now</span> <span class="ok">● current</span>
+<span class="c">AI Engineer</span> · MENADevs              <span class="dim">Oct 2024 – Apr 2026</span>
+    LLM training data review in Python, Java, Swift and Go
+<span class="c">Technical Support Specialist</span> · TabSense <span class="dim">Jul 2024 – Dec 2024</span>
+    95% SLA · −20% resolution time · 90% CSAT
+<span class="c">B.Sc. Software Engineering</span> · ASU      <span class="dim">2019 – 2024</span>`),
+      skills: () => print(`<span class="ac">languages </span> Python  JavaScript  Java  C#  SQL
+<span class="ac">ai/ml     </span> LLM pipelines  prompt engineering  data labeling &amp; validation
+<span class="ac">automation</span> n8n  Activepieces  Zapier  webhooks  APIs
+<span class="ac">frameworks</span> .NET  Node.js  HTML/CSS
+<span class="ac">testing   </span> Selenium  PyTest  Newman
+<span class="ac">support   </span> Zendesk  HubSpot  CRM  SLA/KPI`),
+      contact: () => print(`<span class="c">alihuzayen22@gmail.com</span>
+<a class="ac" href="https://www.linkedin.com/in/alihuzain" target="_blank" rel="noopener">linkedin.com/in/alihuzain</a>
+<a class="ac" href="https://github.com/AliHuzain" target="_blank" rel="noopener">github.com/AliHuzain</a>
+<span class="dim">Type </span><span class="ac">copy</span><span class="dim"> to copy my email, or </span><span class="ac">linkedin</span><span class="dim"> to open my profile.</span>`),
+      linkedin: () => { window.open('https://www.linkedin.com/in/alihuzain', '_blank', 'noopener'); print('<span class="ok">✓</span> Opening LinkedIn in a new tab.'); },
+      copy: () => copyEmail(null).then(ok => print(ok ? '<span class="ok">✓ Email copied to your clipboard.</span>' : '<span class="er">Your browser blocked the clipboard. The address is alihuzayen22@gmail.com</span>')),
+      ticket: () => {
+        const p = router.send();
+        print(`<span class="ok">✓</span> Ticket sent with priority <span class="ac">P${p}</span>. Scroll to the router to watch it land.`);
+      },
+      sweep: () => { if (field.sweep) field.sweep(); print('<span class="ok">✓</span> Validation sweep started on the hero.'); },
+      theme: () => print(`Theme set to <span class="ac">${toggleTheme()}</span>.`),
+      open: (a) => {
+        const map = { work: 'work', projects: 'work', experience: 'experience', toolkit: 'toolkit', skills: 'toolkit', contact: 'contact' };
+        if (map[a]) go(map[a]); else print('<span class="er">Usage: open work | experience | toolkit | contact</span>');
+      },
+      clear: () => { out.innerHTML = ''; },
+      exit: () => close(),
+      sudo: (a) => {
+        if (/hire/.test(a)) { print('<span class="ok">[sudo] permission granted.</span> Opening contact…'); setTimeout(() => go('contact'), 700); }
+        else print('<span class="er">ali is not in the sudoers file. This incident will be reported.</span> <span class="dim">(try: sudo hire ali)</span>');
+      },
+      ls: () => print('<span class="ac">work/</span>  <span class="ac">experience/</span>  <span class="ac">toolkit/</span>  <span class="ac">contact/</span>  resume.pdf'),
+      'cat': (a) => a === 'resume.pdf' ? print('<span class="dim">Binary file. Try </span><span class="ac">experience</span><span class="dim"> instead.</span>') : print('<span class="er">cat: ' + esc(a || '') + ': no such file</span>'),
+    };
+    const names = Object.keys(cmds);
+
+    function run(line) {
+      const raw = line.trim();
+      print(`<span class="ac">ali@amman:~$</span> ${esc(raw)}`, 'c');
+      if (!raw) return;
+      hist.push(raw); hi = hist.length;
+      const [cmd, ...rest] = raw.split(/\s+/);
+      const f = cmds[cmd.toLowerCase()];
+      if (f) f(rest.join(' ').toLowerCase());
+      else print(`<span class="er">command not found: ${esc(cmd)}</span>. Type <span class="ac">help</span>.`);
+    }
+    function open() {
+      lastFocus = document.activeElement;
+      wrap.hidden = false; document.body.style.overflow = 'hidden';
+      if (!booted) {
+        booted = true;
+        print(`<span class="c">portfolio shell 1.0</span> <span class="dim">· ${new Date().toDateString()}</span>
+Welcome. Type <span class="ac">help</span> to see what you can do here.`);
+      }
+      setTimeout(() => input.focus(), 30);
+    }
+    function close() {
+      if (wrap.hidden) return;
+      wrap.hidden = true; document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    openBtn.addEventListener('click', open);
+    document.getElementById('closeTerm').addEventListener('click', close);
+    wrap.addEventListener('pointerdown', (e) => { if (e.target === wrap) close(); });
+    form.addEventListener('submit', (e) => { e.preventDefault(); run(input.value); input.value = ''; });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') { e.preventDefault(); if (hi > 0) input.value = hist[--hi]; }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); hi = Math.min(hist.length, hi + 1); input.value = hist[hi] || ''; }
+      else if (e.key === 'Tab') {
+        e.preventDefault();
+        const v = input.value.trim().toLowerCase();
+        const m = names.filter(n => n.startsWith(v));
+        if (m.length === 1) input.value = m[0] + ' ';
+        else if (m.length > 1) print('<span class="dim">' + m.join('  ') + '</span>');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+      if (!typing && wrap.hidden && (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'))) { e.preventDefault(); open(); }
+    });
+  })();
+})();
+</script>
+</body>
+</html>
