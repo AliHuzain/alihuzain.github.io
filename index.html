@@ -8,19 +8,19 @@
 <meta property="og:title" content="Ali Huzain, software developer and AI engineer">
 <meta property="og:description" content="Full-stack features, AI and workflow automation, and two years checking the data that trains large language models.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FFE23F" id="metaTheme">
+<meta name="theme-color" content="#F4F2EC" id="metaTheme">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23FFE23F'/%3E%3Cpath d='M20 20L44 44M44 20L20 44' stroke='%23000' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=JetBrains+Mono:wght@400;500&family=Mr+Dafoe&display=swap">
-<script>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('ah-theme')}catch(e){}if(t!=='butter'&&t!=='paper'&&t!=='night'){t='butter'}d.dataset.theme=t;var m={butter:'#FFE23F',paper:'#F4F2EC',night:'#000000'};document.querySelector('meta[name=theme-color]').content=m[t];})();</script>
+<script>(function(){var d=document.documentElement;d.classList.add('js');var t=null;try{t=localStorage.getItem('ah-theme')}catch(e){}if(t!=='butter'&&t!=='paper'&&t!=='night'){t='paper'}d.dataset.theme=t;var m={butter:'#FFE23F',paper:'#F4F2EC',night:'#000000'};document.querySelector('meta[name=theme-color]').content=m[t];})();</script>
 <noscript><style>.pre{display:none!important}</style></noscript>
 <style>
 /* Two inks per theme. --y is the page ink, --k the type ink; inverted sections swap them.
    One of the pair is always pure black, which is what lets the difference-blended cursor
    ink swap the two exactly. --nb names whichever of the pair is not black. */
 :root {
-  --y: #FFE23F;
+  --y: #F4F2EC;
   --k: #000000;
   --nb: var(--y);
   --pass: #08744A; --warn: #D2310F;     /* status colours on the page ink */
@@ -49,7 +49,7 @@
   --hdr: 64px;
   color-scheme: light;
 }
-:root[data-theme="paper"] { --y: #F4F2EC; }
+:root[data-theme="butter"] { --y: #FFE23F; }
 :root[data-theme="night"] {
   --y: #000000; --k: #B9A4FF; --nb: var(--k);
   --pass: #5BE3A4; --warn: #FF7A59; --pass-i: #05613C; --warn-i: #B0250A;
@@ -102,6 +102,7 @@ html.fx input { cursor: text !important; }
 /* ---------- ink + cursor layers ---------- */
 #ink { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; z-index: 50; pointer-events: none; mix-blend-mode: difference; }
 #stamps { position: fixed; inset: 0; z-index: 58; pointer-events: none; }
+#web { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 56; pointer-events: none; mix-blend-mode: difference; }
 .stamp {
   position: fixed; left: 0; top: 0; width: var(--cw); aspect-ratio: 4 / 5; opacity: 0;
   margin: calc(var(--cw) * -.625) 0 0 calc(var(--cw) * -.5); will-change: transform, opacity;
@@ -180,6 +181,14 @@ html.fx .cdot { opacity: 1; }
 .btn-y:hover { background: transparent; color: var(--y); }
 .btn-oy { background: transparent; color: var(--y); border-color: var(--y); }
 .btn-oy:hover { background: var(--y); color: var(--k); }
+/* Magnetic buttons: JS springs drive the transform, and the captured ink does the colour flip,
+   so the CSS hover swap is switched off where the ink is active. */
+.mg-in { display: inline-block; pointer-events: none; will-change: transform; }
+.fx .btn[data-magnet], .fx .email[data-magnet] { transition: background-color .25s, color .25s; will-change: transform; }
+.fx .btn-k[data-magnet]:hover { background: var(--k); color: var(--y); }
+.fx .btn-o[data-magnet]:hover { background: transparent; color: var(--k); }
+.fx .btn-y[data-magnet]:hover { background: var(--y); color: var(--k); }
+.fx .btn-oy[data-magnet]:hover { background: transparent; color: var(--y); }
 
 .live { display: inline-flex; align-items: center; gap: 8px; }
 .live i, .pulse { position: relative; width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; }
@@ -202,7 +211,7 @@ html.fx .cdot { opacity: 1; }
 .js .name:not(.ready) .line { overflow: clip; }
 .ch { display: inline-block; transform-origin: 50% 100%; font-variation-settings: "wdth" var(--wd, 70), "wght" var(--wg, 900); }
 .ch .in { display: inline-block; }
-.touch .ch { will-change: transform; }
+.ch { will-change: transform; }
 .js .ch .in { transform: translateY(112%); transition: transform 1.25s cubic-bezier(.16, 1, .3, 1); transition-delay: calc(var(--i) * 60ms); }
 .js .name.in .ch .in { transform: none; }
 .sp { display: inline-block; width: .2em; }
@@ -253,14 +262,28 @@ html.fx .cdot { opacity: 1; }
 .stmt .sw { opacity: .16; transition: opacity .4s ease; }
 .stmt .sw.on { opacity: 1; }
 .js-off .stmt .sw { opacity: 1; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(56px, 8vw, 112px); border-top: 2px solid var(--k); }
+.stats { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(56px, 8vw, 112px); }
+.stats::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--k);
+  transform-origin: 0 50%; transition: transform 1.3s cubic-bezier(.65, 0, .35, 1);
+}
 .stat { padding: 22px 22px 0 0; min-width: 0; }
 .stat + .stat { padding-left: 22px; border-left: 2px solid var(--k); }
 .stat b {
-  display: block; font: 900 clamp(48px, 6.6vw, 110px)/.9 var(--f); font-variation-settings: "wdth" 60, "wght" 900;
+  display: block; font: 900 clamp(48px, 6.6vw, 110px)/1 var(--f); font-variation-settings: "wdth" 60, "wght" 900;
   letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-.stat span { display: block; margin-top: 12px; font-size: 15.5px; line-height: 1.4; max-width: 22ch; }
+.stat .fig { display: inline-flex; align-items: flex-start; }
+.stat .cnt { display: inline-flex; align-items: flex-start; }
+/* odometer: each digit is a 1em window onto a vertical strip of digits */
+.dg { display: inline-block; height: 1em; overflow: hidden; }
+.roll { display: flex; flex-direction: column; will-change: transform; }
+.roll > i, .sep, .suf { font-style: normal; display: block; height: 1em; line-height: 1; }
+.sep, .suf { display: inline-block; }
+.suf { transform-origin: 30% 85%; transition: transform .75s cubic-bezier(.34, 1.9, .5, 1) var(--sd, 1.3s); }
+.stat .lbl { display: block; margin-top: 12px; font-size: 15.5px; line-height: 1.4; max-width: 22ch; }
+.js .stats:not(.on)::before { transform: scaleX(0); }
+.js .stats:not(.on) .suf { transform: scale(0) rotate(-30deg); }
 @media (max-width: 820px) {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat:nth-child(3) { padding-left: 0; border-left: 0; }
@@ -277,7 +300,7 @@ html.fx .cdot { opacity: 1; }
   position: relative; margin: 0; padding-right: .3em;
   font: 900 clamp(60px, 12.5vw, 210px)/.8 var(--f); font-variation-settings: "wdth" 62, "wght" 900; letter-spacing: -.015em;
 }
-.bc { display: inline-block; white-space: pre; font-variation-settings: "wdth" var(--wd, 62), "wght" var(--wg, 900); }
+.bc { display: inline-block; white-space: pre; transform-origin: 50% 85%; will-change: transform; }
 .sec-h { contain: layout style; }
 .tilt-btn {
   height: 40px; padding: 0 18px; margin-top: 12px; border-radius: 99px; border: 2px solid var(--k);
@@ -580,7 +603,7 @@ html.fx .cdot { opacity: 1; }
       <a class="pill hide-s" href="#experience">Experience</a>
       <a class="pill hide-s" href="#toolkit">Toolkit</a>
       <a class="pill" href="#contact">Contact</a>
-      <button class="pill theme-pill" type="button" id="themeBtn" aria-label="Switch theme"><i class="tdot" aria-hidden="true"></i><span id="themeName">Butter</span></button>
+      <button class="pill theme-pill" type="button" id="themeBtn" aria-label="Switch theme"><i class="tdot" aria-hidden="true"></i><span id="themeName">Paper</span></button>
       <button class="pill" type="button" id="openTerm" aria-haspopup="dialog">Terminal <kbd>/</kbd></button>
     </nav>
   </div>
@@ -617,10 +640,10 @@ html.fx .cdot { opacity: 1; }
   <section class="about" id="about" aria-label="About">
     <p class="stmt" id="stmt">I'm Ali, a software developer at Arkan Technology. I build backend services, REST APIs and the web interfaces on top of them, wire AI and automation into client products, and spent two years making sure the data that trains large language models is actually right.</p>
     <div class="stats">
-      <div class="stat"><b><span class="cnt" data-to="2">2</span>+</b><span>years across AI data, full-stack builds and support</span></div>
-      <div class="stat"><b><span class="cnt" data-to="1000">1,000</span>+</b><span>customers on the e-commerce platform I built</span></div>
-      <div class="stat"><b><span class="cnt" data-to="95">95</span>%</b><span>SLA compliance across every support channel</span></div>
-      <div class="stat"><b><span class="cnt" data-to="40">40</span>%</b><span>shorter customer response time with my custom CRM</span></div>
+      <div class="stat"><b><span class="sr">2+</span><span class="fig" aria-hidden="true"><span class="cnt" data-to="2">2</span><i class="suf">+</i></span></b><span class="lbl">years across AI data, full-stack builds and support</span></div>
+      <div class="stat"><b><span class="sr">1,000+</span><span class="fig" aria-hidden="true"><span class="cnt" data-to="1000">1,000</span><i class="suf">+</i></span></b><span class="lbl">customers on the e-commerce platform I built</span></div>
+      <div class="stat"><b><span class="sr">95%</span><span class="fig" aria-hidden="true"><span class="cnt" data-to="95">95</span><i class="suf">%</i></span></b><span class="lbl">SLA compliance across every support channel</span></div>
+      <div class="stat"><b><span class="sr">40%</span><span class="fig" aria-hidden="true"><span class="cnt" data-to="40">40</span><i class="suf">%</i></span></b><span class="lbl">shorter customer response time with my custom CRM</span></div>
     </div>
   </section>
 
@@ -921,6 +944,8 @@ html.fx .cdot { opacity: 1; }
   const readers = [], writers = [];
   let lastT = performance.now(), sy = window.scrollY, vel = 0, SY = window.scrollY;
   let Ink = null;
+  const MAG = { cap: null, tension: 0, block: null };   // the magnetic button currently holding the cursor, and how hard it is being pulled
+  const WEB = { on: false, x: 0, y: 0, owner: null, shake: 0, kick: null };   // the web's grip on the visible cursor
   // Frame-time governor: drops ink resolution when a device struggles, restores it when it recovers.
   const Gov = {
     ema: 16.7, bad: 0, good: 0,
@@ -974,7 +999,8 @@ html.fx .cdot { opacity: 1; }
     heroRect = hero.getBoundingClientRect();
     T.heroVis = heroRect.bottom > 90;
     T.auto = !P.inside && !P.touching;
-    if (T.auto) {
+    if (WEB.on && !T.auto) { T.x = WEB.x; T.y = WEB.y; }
+    else if (T.auto) {
       const W = L.vw, H = heroRect.height;
       if (fine) { T.x = W * 0.5 + W * 0.3 * Math.sin(t * 0.00058); T.y = heroRect.top + H * 0.47 + H * 0.2 * Math.sin(t * 0.00109 + 1.2); }
       else { T.x = W * 0.5 + W * 0.34 * Math.sin(t * 0.0007); T.y = heroRect.top + H * 0.36 + H * 0.13 * Math.sin(t * 0.0013 + 1.2); }
@@ -1223,6 +1249,7 @@ void main(){
     const pts = [];            // trail + drops, in document coordinates
     const head = { x: T.x, y: T.y, r: 0, tr: 0, vx: 0, vy: 0 };
     const em = { x: T.x, y: T.y };
+    let capP = 0, lastCap = null;
     const lava = [
       { fx: 0.97, fy: 0.24, r: 0.12, ax: 0.015, ay: 0.06, sp: 0.00036, ph: 0 },
       { fx: 0.02, fy: 0.8, r: 0.085, ax: 0.02, ay: 0.05, sp: 0.00049, ph: 2.1 },
@@ -1237,37 +1264,45 @@ void main(){
 
     // Blobs that can't touch are drawn as separate clusters, each clipped to its own box,
     // so the GPU only shades pixels near ink instead of the whole screen.
+    // The screen is cut into tiles (in device pixels, so tiles never overlap). Each tile is drawn only if
+    // some blob's visible edge reaches it, and the shader loops only over the blobs near that tile.
+    // A blob further than r + k from a tile cannot change any visible pixel in it, so the result is identical
+    // to shading everything, at a fraction of the cost.
     function render(n, t) {
       gl.disable(gl.SCISSOR_TEST);
       gl.clear(gl.COLOR_BUFFER_BIT);
       if (!n) return;
       gl.uniform1f(U.t, t / 1000);
-      for (let i = 0; i < n; i++) par[i] = i;
-      for (let i = 0; i < n; i++) {
-        const o = i * 4, xi = data[o], yi = data[o + 1], ri = data[o + 2], ki = data[o + 3];
-        for (let j = i + 1; j < n; j++) {
-          const p = j * 4, dx = data[p] - xi, dy = data[p + 1] - yi, reach = ri + data[p + 2] + Math.max(ki, data[p + 3]) + 6;
-          if (dx * dx + dy * dy < reach * reach) { const a = find(i), b = find(j); if (a !== b) par[a] = b; }
-        }
-      }
       gl.enable(gl.SCISSOR_TEST);
-      const CW = cv.width, CH = cv.height;
-      for (let g = 0; g < n; g++) {
-        if (find(g) !== g) continue;
-        let c = 0, x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
-        for (let i = 0; i < n; i++) {
-          if (find(i) !== g) continue;
-          const o = i * 4, m = data[o + 2] + data[o + 3] * 0.3 + 6;
-          if (data[o] - m < x0) x0 = data[o] - m; if (data[o] + m > x1) x1 = data[o] + m;
-          if (data[o + 1] - m < y0) y0 = data[o + 1] - m; if (data[o + 1] + m > y1) y1 = data[o + 1] + m;
-          const p = c * 4; packed[p] = data[o]; packed[p + 1] = data[o + 1]; packed[p + 2] = data[o + 2]; packed[p + 3] = data[o + 3]; c++;
+      const CW = cv.width, CH = cv.height, TP = Math.max(64, Math.round(128 * dpr));
+      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      for (let i = 0; i < n; i++) {
+        const o = i * 4, m = data[o + 2] + data[o + 3] * 0.3 + 6;
+        if (data[o] - m < x0) x0 = data[o] - m; if (data[o] + m > x1) x1 = data[o] + m;
+        if (data[o + 1] - m < y0) y0 = data[o + 1] - m; if (data[o + 1] + m > y1) y1 = data[o + 1] + m;
+      }
+      const X0 = clamp(Math.floor(x0 * dpr / TP) * TP, 0, CW), X1 = clamp(Math.ceil(x1 * dpr), 0, CW);
+      const Y0 = clamp(Math.floor(y0 * dpr / TP) * TP, 0, CH), Y1 = clamp(Math.ceil(y1 * dpr), 0, CH);
+      for (let TY = Y0; TY < Y1; TY += TP) {
+        const ty0 = TY / dpr, ty1 = Math.min(TY + TP, CH) / dpr;
+        for (let TX = X0; TX < X1; TX += TP) {
+          const tx0 = TX / dpr, tx1 = Math.min(TX + TP, CW) / dpr;
+          let c = 0, vis = false;
+          for (let i = 0; i < n; i++) {
+            const o = i * 4, px = data[o], py = data[o + 1], r = data[o + 2], k = data[o + 3];
+            const dx = px - clamp(px, tx0, tx1), dy = py - clamp(py, ty0, ty1), d2 = dx * dx + dy * dy;
+            const reach = r + k + 6;
+            if (d2 > reach * reach) continue;
+            const seen = r + k * 0.3 + 6;
+            if (d2 < seen * seen) vis = true;
+            const q = c * 4; packed[q] = px; packed[q + 1] = py; packed[q + 2] = r; packed[q + 3] = k; c++;
+          }
+          if (!c || !vis) continue;
+          const w = Math.min(TP, CW - TX), h = Math.min(TP, CH - TY);
+          gl.scissor(TX, CH - TY - h, w, h);
+          gl.uniform1i(U.n, c); gl.uniform4fv(U.p, packed.subarray(0, c * 4));
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
         }
-        const sx0 = clamp(Math.floor(x0 * dpr), 0, CW), sx1 = clamp(Math.ceil(x1 * dpr), 0, CW);
-        const sy0 = clamp(Math.floor(y0 * dpr), 0, CH), sy1 = clamp(Math.ceil(y1 * dpr), 0, CH);
-        if (sx1 <= sx0 || sy1 <= sy0) continue;
-        gl.scissor(sx0, CH - sy1, sx1 - sx0, sy1 - sy0);
-        gl.uniform1i(U.n, c); gl.uniform4fv(U.p, packed.subarray(0, c * 4));
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
       }
     }
 
@@ -1277,6 +1312,7 @@ void main(){
       else if (T.auto) tr = T.inHero ? 30 : 0;
       else if (CS === 'text') tr = 0;
       else if (CS === 'drag') tr = 44;
+      else if (MAG.cap) tr = 9;
       else if (CS === 'copy') tr = 42;
       else if (CS === 'link') tr = 34;
       else if (T.inHero) tr = 30;
@@ -1286,8 +1322,11 @@ void main(){
       head.x += (T.x - head.x) * damp(0.5, f); head.y += (T.y - head.y) * damp(0.5, f);
       head.vx = (head.x - ox) / f; head.vy = (head.y - oy) / f;
       head.r += (head.tr - head.r) * damp(0.17, f);
+      const cap = fine && !T.auto ? MAG.cap : null;
+      if (cap) lastCap = cap;
+      capP += ((cap ? 1 : 0) - capP) * damp(cap ? 0.2 : 0.13, f);
 
-      const trail = T.inHero || (fine && head.r > 4 && !T.auto);
+      const trail = !cap && (T.inHero || (fine && head.r > 4 && !T.auto));
       const dx = head.x - em.x, dy = head.y - em.y, dist = Math.hypot(dx, dy);
       if (trail) {
         const sp = T.inHero ? 9 : 6;
@@ -1306,6 +1345,19 @@ void main(){
       let n = 0;
       const H = L.vh, sY = SY, tx = Tilt.sx, ty = Tilt.sy;
       if (head.r > 0.6) { data[0] = head.x; data[1] = head.y; data[2] = head.r; data[3] = 22; n = 1; }
+      // Captured: the ink leaves the pointer and wraps the button as a row of merged blobs (a liquid pill),
+      // still joined to the pointer bead by a stretchy neck. Releasing pulls it all back into the cursor.
+      if (capP > 0.01 && lastCap) {
+        const c = lastCap, span = Math.max(0, c.w - c.h), R = c.h / 2 + 5;
+        const m = Math.max(2, Math.min(18, Math.round(span / (c.h * 0.45)) + 1));
+        for (let i = 0; i < m && n < MAX; i++) {
+          const px = c.x - span / 2 + span * (i / (m - 1)), o = n * 4;
+          data[o] = lerp(head.x, px, capP);
+          data[o + 1] = lerp(head.y, c.y, capP);
+          data[o + 2] = lerp(head.r, R, capP) * (0.55 + 0.45 * capP) * (1 + 0.025 * Math.sin(t * 0.006 + i * 1.7));
+          data[o + 3] = 20; n++;
+        }
+      }
       if (T.heroVis && heroRect.bottom > 0) {
         const W = L.vw, hh = heroRect.height, m = Math.min(W, hh);
         for (const b of lava) {
@@ -1358,9 +1410,10 @@ void main(){
     if (!fine || !Ink) { dot.remove(); lab.remove(); return; }
     let lx = P.x, ly = P.y, txt = '', on = false;
     writers.push((t, f) => {
-      dot.style.transform = `translate3d(${P.x}px, ${P.y}px, 0)`;
+      const cx = WEB.on ? WEB.x : P.x, cy = WEB.on ? WEB.y : P.y;
+      dot.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
       dot.style.opacity = P.inside ? '' : '0';
-      lx += (P.x - lx) * damp(0.5, f); ly += (P.y - ly) * damp(0.5, f);
+      lx += (cx - lx) * damp(0.5, f); ly += (cy - ly) * damp(0.5, f);
       const want = P.inside ? (CS === 'drag' ? 'Drag' : CS === 'copy' ? 'Copy' : '') : '';
       if (want && want !== txt) { lab.textContent = want; txt = want; }
       if (!!want !== on) { on = !!want; lab.classList.toggle('on', on); }
@@ -1411,6 +1464,7 @@ void main(){
       let mode = null;
       if (hoverKey && !T.auto && TILES[hoverKey]) mode = 'hover';
       else if (T.inHero) mode = 'hero';
+      if (MAG.cap && !T.auto) mode = null;   // a magnetic button has the cursor; the card steps aside
       if (mode === 'hero' && S.key && !HERO_KEYS.includes(S.key)) setTile(HERO_KEYS[S.idx]);
       if (mode === 'hover' && S.key !== hoverKey) setTile(hoverKey);
       if (mode === 'hero' && !S.key) setTile(HERO_KEYS[S.idx]);
@@ -1476,15 +1530,8 @@ void main(){
         if (key === s.w) continue;
         s.w = key;
         const el = chs[i];
-        if (fine) {
-          // Desktop: the variable font itself stretches (width + weight).
-          el.style.setProperty('--wd', (70 + 80 * k).toFixed(1));
-          el.style.setProperty('--wg', (900 - 520 * k).toFixed(0));
-          el.style.transform = `translateY(${(k * fs * 0.06).toFixed(2)}px) scaleY(${(1 - k * 0.1).toFixed(3)}) rotate(${s.r.toFixed(2)}deg)`;
-        } else {
-          // Phones: transform-only stretch, composited on the GPU, no text relayout.
-          el.style.transform = `translateY(${(-k * fs * 0.05).toFixed(2)}px) scale(${(1 + k * 0.34).toFixed(3)}, ${(1 - k * 0.12).toFixed(3)}) rotate(${s.r.toFixed(2)}deg)`;
-        }
+        // Transform-only squash and stretch: composited on the GPU, so the giant glyphs are never re-laid out.
+        el.style.transform = k === 0 && Math.abs(s.r) < 0.01 ? '' : `translateY(${(-k * fs * 0.05).toFixed(2)}px) scale(${(1 + k * 0.34).toFixed(3)}, ${(1 - k * 0.12).toFixed(3)}) rotate(${s.r.toFixed(2)}deg)`;
       }
     }
     return { tick, fit, measure };
@@ -1528,12 +1575,11 @@ void main(){
           const tk = smooth(Math.max(0, 1 - Math.hypot(px - c.x, py - c.y) / R)), s = it.st[i];
           s.k += (tk - s.k) * damp(0.12, f);
           if (s.k < 0.002 && tk === 0) {
-            if (s.w !== '0') { s.k = 0; s.w = '0'; it.chs[i].style.removeProperty('--wd'); it.chs[i].style.removeProperty('--wg'); }
+            if (s.w !== '0') { s.k = 0; s.w = '0'; it.chs[i].style.transform = ''; }
             continue;
           }
           const key = s.k.toFixed(3); if (key === s.w) continue; s.w = key;
-          it.chs[i].style.setProperty('--wd', (62 + 68 * s.k).toFixed(1));
-          it.chs[i].style.setProperty('--wg', (900 - 450 * s.k).toFixed(0));
+          it.chs[i].style.transform = `scale(${(1 + 0.3 * s.k).toFixed(3)}, ${(1 - 0.08 * s.k).toFixed(3)})`;
         }
       }
     }
@@ -1652,17 +1698,48 @@ void main(){
     });
   })();
 
-  /* ================= counters ================= */
-  if (!reduce) $$('.cnt').forEach(el => {
-    onView(el, () => {
-      const to = +el.dataset.to, t0 = performance.now(), D = 1600;
-      (function s(now) {
-        const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 4);
-        el.textContent = Math.round(to * e).toLocaleString('en-US');
-        if (p < 1) requestAnimationFrame(s);
-      })(t0);
+  /* ================= stats: odometer digits ================= */
+  // Each digit rolls through one or more full turns and settles on its value, right-hand digits spinning
+  // further, like a mechanical counter.
+  (function odometers() {
+    const wrap = $('.stats');
+    if (!wrap) return;
+    const stats = $$('.stat', wrap).map((st, si) => {
+      const el = $('.cnt', st), str = (+el.dataset.to).toLocaleString('en-US');
+      el.textContent = '';
+      const digits = [];
+      const nDigits = str.replace(/\D/g, '').length;
+      [...str].forEach((ch) => {
+        if (!/\d/.test(ch)) { const s = document.createElement('i'); s.className = 'sep'; s.textContent = ch; el.append(s); return; }
+        const i = digits.length, d = +ch, loops = 1 + i + (nDigits === 1 ? 1 : 0);
+        const col = document.createElement('span'); col.className = 'dg';
+        const roll = document.createElement('span'); roll.className = 'roll';
+        let html = '';
+        for (let k = 0; k <= loops * 10 + d; k++) html += `<i>${k % 10}</i>`;
+        roll.innerHTML = html;
+        col.append(roll); el.append(col);
+        digits.push({ roll, end: loops * 10 + d });
+      });
+      st.style.setProperty('--sd', (1.25 + si * 0.14).toFixed(2) + 's');
+      return { st, digits, si };
     });
-  });
+    const final = () => stats.forEach(s => s.digits.forEach(g => { g.roll.style.transform = `translateY(${-g.end}em)`; }));
+    if (reduce) { final(); wrap.classList.add('on'); return; }
+    function rollStat(s, delay0) {
+      s.digits.forEach(g => { g.roll.style.transition = 'none'; g.roll.style.transform = 'translateY(0)'; });
+      void s.st.offsetWidth;
+      s.digits.forEach((g, i) => {
+        const delay = delay0 + i * 0.07, dur = 1.45 + i * 0.28;
+        g.roll.style.transition = `transform ${dur}s cubic-bezier(.12,.86,.16,1) ${delay}s`;
+        g.roll.style.transform = `translateY(${-g.end}em)`;
+        if (fine && g.roll.animate) g.roll.animate(
+          [{ filter: 'blur(0px)' }, { filter: 'blur(1.6px)', offset: 0.18 }, { filter: 'blur(0px)', offset: 0.62 }],
+          { duration: dur * 1000, delay: delay * 1000, easing: 'linear' });
+      });
+    }
+    // Rolls exactly once, the first time the stats come into view.
+    onView(wrap, () => { wrap.classList.add('on'); stats.forEach(s => rollStat(s, s.si * 0.14)); });
+  })();
 
   /* ================= stacked work panels ================= */
   (function panels() {
@@ -1734,8 +1811,9 @@ void main(){
 
   /* ================= copy email + magnets ================= */
   function copyEmail(btn) {
-    const label = btn ? btn.textContent : '';
-    const done = (t) => { if (!btn) return; btn.textContent = t; setTimeout(() => { btn.textContent = label; }, 1800); };
+    const tgt = btn ? (btn.querySelector('.mg-in') || btn) : null;
+    const label = tgt ? tgt.textContent : '';
+    const done = (t) => { if (!tgt) return; tgt.textContent = t; setTimeout(() => { tgt.textContent = label; }, 1800); };
     const fallback = () => {
       const el = $('#emailText'); const r = document.createRange(); r.selectNodeContents(el);
       const s = getSelection(); s.removeAllRanges(); s.addRange(r); done('Press Ctrl+C');
@@ -1748,13 +1826,95 @@ void main(){
     buzz(18);
     if (Ink) { const r = b.getBoundingClientRect(); Ink.splash(e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2, true); }
   }));
-  if (fine && !reduce) $$('[data-magnet]').forEach(el => {
-    el.addEventListener('pointermove', (e) => {
-      const r = el.getBoundingClientRect();
-      el.style.transform = `translate(${((e.clientX - (r.left + r.width / 2)) * 0.25).toFixed(1)}px, ${((e.clientY - (r.top + r.height / 2)) * 0.35).toFixed(1)}px)`;
+  /* ================= magnetic buttons that take hold of the cursor ================= */
+  // Inside a zone around each button, the button leans toward the pointer (its label a little further,
+  // for depth) and the nearest one captures the cursor. Once it has hold, it does not let go until the
+  // pointer drags past the break distance; the harder you pull, the more it shakes. Springs throughout.
+  (function magnets() {
+    if (!fine || reduce) return;
+    const ZONE = 130, BREAK = 270, MAXPULL = 26;
+    const items = $$('[data-magnet]').map(el => {
+      const isBtn = el.classList.contains('btn');
+      const capture = isBtn;
+      let inner = el;
+      if (isBtn) {
+        inner = document.createElement('span'); inner.className = 'mg-in';
+        while (el.firstChild) inner.append(el.firstChild);
+        el.append(inner);
+      }
+      const it = { el, inner, capture, pull: isBtn ? 0.24 : 0.08, x: 0, y: 0, vx: 0, vy: 0, ix: 0, iy: 0, ivx: 0, ivy: 0, s: 1, vs: 0, jx: 0, jy: 0, jr: 0, vis: false, key: '' };
+      whileVisible(el, (v) => { it.vis = v; }, '200px');
+      return it;
     });
-    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-  });
+    let held = null;
+    readers.push((t, f) => {
+      let best = null, bestD = 1e9;
+      const active = P.inside && !T.auto;
+      // Pass 1: measure each button where it would sit at rest, so the zone never chases its own movement.
+      for (const it of items) {
+        const moving = Math.abs(it.x) > 0.05 || Math.abs(it.y) > 0.05 || Math.abs(it.s - 1) > 0.001 || Math.abs(it.ix) > 0.05 || it === held;
+        it.live = it.vis || moving;
+        if (!it.live) continue;
+        const r = it.el.getBoundingClientRect();
+        it.w = r.width / it.s; it.h = r.height / it.s;
+        it.cx = r.left + r.width / 2 - it.x - it.jx; it.cy = r.top + r.height / 2 - it.y - it.jy;
+        it.dx = P.x - it.cx; it.dy = P.y - it.cy;
+        it.d = Math.hypot(Math.max(0, Math.abs(it.dx) - it.w / 2), Math.max(0, Math.abs(it.dy) - it.h / 2));
+        it.near = it.vis && active && it.d < ZONE;
+        if (it.el === MAG.block && (!it.near || !it.vis)) MAG.block = null;   // re-arm once the pointer has left
+        if (it.near && it.capture && it.el !== MAG.block && it.d < bestD) { bestD = it.d; best = it; }
+      }
+      // A button that already has hold keeps it until the pointer is dragged past the break distance.
+      // Over some other link (like the email address) no button may grab the cursor.
+      const overEl = P.el && P.el.closest ? P.el.closest('a, button, input') : null;
+      // ...and while it rests on a button that was just clicked, nothing else may grab it either.
+      const overOther = !!overEl && (overEl === MAG.block || !items.some(it => it.capture && it.el === overEl));
+      if (overOther) { best = null; held = null; }
+      if (held && held.el === MAG.block) held = null;
+      // Keep hold until the break distance, unless the pointer is right on top of a different button.
+      const jumped = best && best !== held && best.d === 0;
+      if (held && !jumped && held.live && held.vis && active && held.d < BREAK) best = held;
+      held = best;
+      MAG.tension = best ? clamp((best.d - 14) / (BREAK - 14), 0, 1) : 0;
+      // Pass 2: springs, struggle and recoil.
+      for (const it of items) {
+        if (!it.live) continue;
+        const on = it.capture ? it === best : it.near;
+        const dx = it.dx, dy = it.dy;
+        let tx = on ? dx * it.pull : 0, ty = on ? dy * it.pull : 0;
+        if (it.capture) { const m = Math.hypot(tx, ty); if (m > MAXPULL) { tx *= MAXPULL / m; ty *= MAXPULL / m; } }
+        if (WEB.kick && WEB.kick.el === it.el) { it.vx += WEB.kick.x; it.vy += WEB.kick.y; it.vs -= 0.05; WEB.kick = null; }
+        it.vx += (tx - it.x) * 0.16 * f; it.vy += (ty - it.y) * 0.16 * f;
+        it.vx *= Math.pow(0.72, f); it.vy *= Math.pow(0.72, f);
+        it.x += it.vx * f; it.y += it.vy * f;
+        const tix = on ? clamp(dx * 0.18, -26, 26) : 0, tiy = on ? clamp(dy * 0.22, -16, 16) : 0;
+        it.ivx += (tix - it.ix) * 0.2 * f; it.ivy += (tiy - it.iy) * 0.2 * f;
+        it.ivx *= Math.pow(0.68, f); it.ivy *= Math.pow(0.68, f);
+        it.ix += it.ivx * f; it.iy += it.ivy * f;
+        const ts = on && it.capture ? 1.06 + 0.04 * MAG.tension : 1;
+        it.vs += (ts - it.s) * 0.2 * f; it.vs *= Math.pow(0.62, f); it.s += it.vs * f;
+        // The held button fights back: it trembles harder the more the web is stretched.
+        if (on && it.capture && it.el === WEB.owner && WEB.shake > 0.02) {
+          const a = WEB.shake;
+          it.jx = (Math.sin(t * 0.093) * 0.6 + (Math.random() - 0.5)) * a * 7;
+          it.jy = (Math.cos(t * 0.117) * 0.6 + (Math.random() - 0.5)) * a * 5;
+          it.jr = (Math.random() - 0.5) * a * 5;
+        } else { it.jx = it.jy = it.jr = 0; }
+      }
+      MAG.cap = best ? { el: best.el, x: best.cx + best.x + best.jx, y: best.cy + best.y + best.jy, w: best.w * best.s, h: best.h * best.s } : null;
+    });
+    writers.push(() => {
+      for (const it of items) {
+        const X = it.x + it.jx, Y = it.y + it.jy;
+        const key = `${X.toFixed(1)},${Y.toFixed(1)},${it.jr.toFixed(2)},${it.s.toFixed(3)},${it.ix.toFixed(1)},${it.iy.toFixed(1)}`;
+        if (key === it.key) continue;
+        it.key = key;
+        const rest = Math.abs(X) < 0.05 && Math.abs(Y) < 0.05 && Math.abs(it.s - 1) < 0.001 && Math.abs(it.jr) < 0.01;
+        it.el.style.transform = rest ? '' : `translate3d(${X.toFixed(1)}px, ${Y.toFixed(1)}px, 0) rotate(${it.jr.toFixed(2)}deg) scale(${it.s.toFixed(3)})`;
+        if (it.inner !== it.el) it.inner.style.transform = rest && Math.abs(it.ix) < 0.05 && Math.abs(it.iy) < 0.05 ? '' : `translate3d(${it.ix.toFixed(1)}px, ${it.iy.toFixed(1)}px, 0)`;
+      }
+    });
+  })();
 
   /* hero: click or tap to splash */
   hero.addEventListener('pointerdown', (e) => {
@@ -2016,7 +2176,7 @@ void main(){
     const meta = { butter: '#FFE23F', paper: '#F4F2EC', night: '#000000' };
     const btn = $('#themeBtn'), label = $('#themeName'), mt = $('#metaTheme');
     let busy = false;
-    const cur = () => (order.includes(root.dataset.theme) ? root.dataset.theme : 'butter');
+    const cur = () => (order.includes(root.dataset.theme) ? root.dataset.theme : 'paper');
     const nextOf = (t) => order[(order.indexOf(t) + 1) % order.length];
     function sync() {
       const t = cur();
@@ -2185,6 +2345,258 @@ Welcome. Type <span class="ac">help</span> to see what you can do here.`);
       const a = document.activeElement;
       const typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable);
       if (!typing && wrap.hidden && (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'))) { e.preventDefault(); open(); }
+    });
+  })();
+
+  /* ================= silk: the button shoots a web and reels the cursor in ================= */
+  // Every thread is a simulated rope (verlet points under gravity with length constraints). Tips are shot
+  // from all the way round the button's rim, home in on the cursor and stick; threads from the far side
+  // collide with the button and wrap around its outline. Rings are woven across neighbouring threads.
+  // Stuck threads tug the visible cursor toward the button and shake harder as you pull away. Breaking
+  // free unpins every tip so the ropes recoil elastically into the button. The real pointer never moves.
+  (function silk() {
+    if (!fine || reduce || !Ink) return;
+    const cv = document.createElement('canvas'); cv.id = 'web'; cv.setAttribute('aria-hidden', 'true');
+    document.body.append(cv);
+    const ctx = cv.getContext('2d');
+    const N = 14, SEG = 16, GRAV = 0.22, ITER = 8, M = 6, RINGS = [SEG - 2, SEG - 4, SEG - 7, SEG - 10];
+    let W = 0, H = 0, dpr = 1, phase = 'idle', t0 = 0, owner = null, strands = [], col = '#000', phi = 0;
+    let last = null, tug = 0, alpha = 1, dirty = false, lastOut = 0, effort = 0;
+    const LEASH = 62;
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    size(); addEventListener('resize', size);
+    const facing = (c, x, y) => Math.atan2((y - c.y) / c.h, (x - c.x) / c.w);
+    // The button is a pill (a capsule): a straight core with round ends. rimDist finds how far its outline
+    // is from the centre in a given direction; anchors sit on that outline, spread round the whole rim.
+    function rimDist(ux, uy, c) {
+      const R = c.h / 2, L = Math.max(0, c.w / 2 - R);
+      let lo = 0, hi = c.w;
+      for (let i = 0; i < 14; i++) { const m = (lo + hi) / 2, x = ux * m, lx = clamp(x, -L, L); if (Math.hypot(x - lx, uy * m) < R) lo = m; else hi = m; }
+      return lo;
+    }
+    const anchorAt = (o, c) => { const ux = Math.cos(o), uy = Math.sin(o), r = rimDist(ux, uy, c); return [c.x + ux * r, c.y + uy * r]; };
+    // Distance-to-capsule push: returns the correction that moves (x, y) onto the padded outline, or null.
+    function capPush(x, y, c) {
+      const R = c.h / 2 + M, L = Math.max(0, c.w / 2 - c.h / 2), lx = clamp(x - c.x, -L, L);
+      const dx = x - (c.x + lx), dy = y - c.y, d = Math.hypot(dx, dy);
+      if (d >= R) return null;
+      if (d < 1e-4) return [0, -R];
+      return [dx / d * R - dx, dy / d * R - dy];
+    }
+    // Length a thread needs to reach (tx, ty) from rim angle o: follow the rim the short way round until the
+    // target is in view, then go straight. Computed from geometry only, so it can never feed back on itself.
+    function wrapLen(o, c, tx, ty) {
+      if (capPush(tx, ty, c)) { const [ax, ay] = anchorAt(o, c); return Math.hypot(tx - ax, ty - ay); }
+      const a = c.w * 0.52 + M, b = c.h * 0.54 + M;
+      const goal = Math.atan2((ty - c.y) / b, (tx - c.x) / a);
+      const dir = Math.sign(Math.atan2(Math.sin(goal - o), Math.cos(goal - o))) || 1;
+      let th = o, px = c.x + Math.cos(th) * a, py = c.y + Math.sin(th) * b, L = 0;
+      for (let i = 0; i < 40; i++) {
+        if ((Math.cos(th) / a) * (tx - px) + (Math.sin(th) / b) * (ty - py) >= 0) break;
+        th += dir * Math.PI / 40;
+        const qx = c.x + Math.cos(th) * a, qy = c.y + Math.sin(th) * b;
+        L += Math.hypot(qx - px, qy - py); px = qx; py = qy;
+      }
+      return L + Math.hypot(tx - px, ty - py);
+    }
+    // Push a rope point out of the button so threads drape round its outline instead of crossing the label.
+    function collide(q, c) { const k = capPush(q.x, q.y, c); if (k) { q.x += k[0]; q.y += k[1]; } }
+    // Also test the middle of each segment, so a straight piece of thread can never cut across the button.
+    function collideSeg(p0, q, c, moveP) {
+      const k = capPush((p0.x + q.x) / 2, (p0.y + q.y) / 2, c);
+      if (!k) return;
+      const dx = k[0], dy = k[1];
+      q.x += dx; q.y += dy;
+      if (moveP) { p0.x += dx; p0.y += dy; }
+    }
+
+    function begin(cap, t) {
+      owner = cap.el; WEB.owner = owner; phase = 'reach'; t0 = t; alpha = 1; tug = 0; lastOut = 0; effort = 0;
+      col = getComputedStyle(root).getPropertyValue('--nb').trim() || '#000';
+      phi = facing(cap, P.x, P.y);
+      strands = [];
+      const rot = Math.random() * Math.PI * 2 / N;
+      for (let i = 0; i < N; i++) {
+        const o = rot + (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.12;
+        // Threads facing the cursor fire first; the ones behind the button follow and wrap round it.
+        const away = Math.abs(Math.atan2(Math.sin(o - phi), Math.cos(o - phi))) / Math.PI;
+        const [ax, ay] = anchorAt(o, cap);
+        const pts = [];
+        for (let k = 0; k <= SEG; k++) pts.push({ x: ax, y: ay, px: ax, py: ay });
+        strands.push({ o, pts, launch: t + away * 300 + Math.random() * 30, flying: false, stuck: false, rest: 0.5, w: 5.2 - away * 1.6 });
+      }
+    }
+    // Clicked: the web's job is done. Threads let go of the cursor, reel back into the button and fade,
+    // the button gives a small satisfied bounce, and it will not grab again until you leave and return.
+    function finish(t) {
+      if (phase !== 'reach') return;
+      phase = 'done'; t0 = t;
+      for (const st of strands) {
+        if (!st.flying && !st.stuck) { st.live = false; continue; }
+        st.flying = false; st.stuck = false; st.live = true;
+        const e = st.pts[SEG], a = st.pts[0];
+        e.px = e.x - (a.x - e.x) * 0.12; e.py = e.y - (a.y - e.y) * 0.12;
+      }
+      MAG.block = owner; WEB.kick = { el: owner, x: 0, y: -3 };
+      WEB.on = false; WEB.owner = null; WEB.shake = 0; owner = null;
+    }
+    addEventListener('pointerdown', (e) => {
+      if (owner && e.target.closest && e.target.closest('[data-magnet]') === owner) finish(performance.now());
+    }, true);
+    function release(t) {
+      phase = 'snap'; t0 = t;
+      const cx = WEB.x, cy = WEB.y;
+      for (const st of strands) {
+        if (!st.flying && !st.stuck) continue;
+        st.flying = false; st.stuck = false; st.live = true;
+        // Unpin the tip and fling it back toward its anchor: the rope recoils like stretched elastic.
+        const e = st.pts[SEG], a = st.pts[0];
+        e.px = e.x - (a.x - e.x) * 0.24; e.py = e.y - (a.y - e.y) * 0.24;
+        for (let k = 1; k < SEG; k++) { const p = st.pts[k]; p.px = p.x + (Math.random() - 0.5) * 6; p.py = p.y + (Math.random() - 0.5) * 6; }
+      }
+      if (last) { const dx = cx - last.x, dy = cy - last.y, d = Math.hypot(dx, dy) || 1; WEB.kick = { el: owner, x: dx / d * 11, y: dy / d * 11 }; }
+      Ink.splash(cx, cy);
+      WEB.on = false; WEB.owner = null; WEB.shake = 0; owner = null;
+    }
+
+    // Fixed-size physics steps, so the ropes behave the same at any frame rate.
+    function step(t, f, cx, cy) {
+      const n = Math.min(3, Math.max(1, Math.round(f)));
+      for (let i = 0; i < n; i++) stepOnce(t, cx, cy);
+    }
+    function stepOnce(t, cx, cy) {
+      const c = last;
+      const lim = capPush(cx, cy, c) ? Math.floor(SEG * 0.5) : SEG;   // cursor on the button: threads may dive in
+      for (const st of strands) {
+        const [ax, ay] = anchorAt(st.o, c), pts = st.pts, e = pts[SEG];
+        if (phase === 'reach' && !st.flying && !st.stuck) {
+          if (t < st.launch) { for (const q of pts) { q.x = q.px = ax; q.y = q.py = ay; } continue; }
+          // Launch: the tip flies out along the rim's outward normal, then swings round toward the cursor.
+          st.flying = true; st.live = true;
+          const a = c.w * 0.52, b = c.h * 0.54;
+          let nx = Math.cos(st.o) / a, ny = Math.sin(st.o) / b; const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl;
+          const dx = cx - ax, dy = cy - ay, d = Math.hypot(dx, dy) || 1;
+          e.px = e.x - (nx * 22 + dx / d * 10); e.py = e.y - (ny * 22 + dy / d * 10);
+        }
+        if (!st.live) continue;
+        for (let k = 1; k <= SEG; k++) {
+          const q = pts[k], vx = (q.x - q.px) * 0.96, vy = (q.y - q.py) * 0.96;
+          q.px = q.x; q.py = q.y; q.x += vx; q.y += vy + GRAV;
+        }
+        if (st.flying) {
+          // Homing silk: after the fling, steer the tip onto the cursor, then stick.
+          const h = clamp((t - st.launch - 70) / 200, 0, 1) * 0.16;
+          e.x += (cx - e.x) * h; e.y += (cy - e.y) * h;
+          if (Math.hypot(cx - e.x, cy - e.y) < 9) { st.flying = false; st.stuck = true; }
+        }
+        // Rest length from geometry (round the rim, then straight), pulled slightly taut once stuck.
+        if (phase === 'reach') {
+          const want = clamp(wrapLen(st.o, c, st.stuck ? cx : e.x, st.stuck ? cy : e.y) / SEG * (st.stuck ? 0.975 : 1.05), 0.5, 60);
+          st.rest += (want - st.rest) * (st.stuck ? 0.3 : 1);
+        } else st.rest *= phase === 'done' ? 0.76 : 0.86;
+        pts[0].x = pts[0].px = ax; pts[0].y = pts[0].py = ay;
+        if (st.stuck) { e.x = e.px = cx; e.y = e.py = cy; }
+        for (let it = 0; it < ITER; it++) {
+          for (let k = 0; k < SEG; k++) {
+            const a = pts[k], b = pts[k + 1];
+            const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1e-4, diff = (d - st.rest) / d;
+            const wa = k === 0 ? 0 : 1, wb = (k + 1 === SEG && st.stuck) ? 0 : 1, sum = wa + wb;
+            if (!sum) continue;
+            a.x += dx * diff * (wa / sum); a.y += dy * diff * (wa / sum);
+            b.x -= dx * diff * (wb / sum); b.y -= dy * diff * (wb / sum);
+          }
+          for (let k = 1; k < lim; k++) collide(pts[k], c);
+          if (!st.stuck && lim === SEG) collide(e, c);
+          for (let k = 0; k < lim; k++) collideSeg(pts[k], pts[k + 1], c, k > 0);
+          pts[0].x = ax; pts[0].y = ay;
+          if (st.stuck) { e.x = cx; e.y = cy; }
+        }
+        // Taut silk hums while you fight it.
+        if (st.stuck && WEB.shake > 0.1) {
+          const amp = WEB.shake * 3;
+          for (let k = 2; k < SEG - 1; k++) { pts[k].x += (Math.random() - 0.5) * amp; pts[k].y += (Math.random() - 0.5) * amp; }
+        }
+      }
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.globalAlpha = alpha;
+      for (const st of strands) {
+        if (!st.live) continue;
+        const pts = st.pts;
+        // Smooth and tapered: heavy where it leaves the button, fine at the tip.
+        let mx = pts[0].x, my = pts[0].y;
+        for (let k = 1; k < SEG; k++) {
+          const nx = (pts[k].x + pts[k + 1].x) / 2, ny = (pts[k].y + pts[k + 1].y) / 2;
+          ctx.lineWidth = lerp(st.w, 1.8, k / (SEG - 1));
+          ctx.beginPath(); ctx.moveTo(mx, my); ctx.quadraticCurveTo(pts[k].x, pts[k].y, nx, ny); ctx.stroke();
+          mx = nx; my = ny;
+        }
+        ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(pts[SEG].x, pts[SEG].y); ctx.stroke();
+        ctx.beginPath(); ctx.arc(pts[0].x, pts[0].y, st.w * 0.95, 0, 7); ctx.fill();
+      }
+      // Rings woven across neighbouring threads, laid down a segment at a time.
+      const el = t - t0;
+      RINGS.forEach((k, ri) => {
+        const rp = phase === 'reach' ? clamp((el - 420 - ri * 120) / 340, 0, 1) : 1;
+        const segs = Math.floor(rp * N + 1e-4);
+        ctx.lineWidth = 2.1;
+        for (let i = 0; i < segs; i++) {
+          const a = strands[i], b = strands[(i + 1) % N];
+          if (!a.live || !b.live || (phase === 'reach' && !(a.stuck && b.stuck))) continue;
+          const p1 = a.pts[k], p2 = b.pts[k];
+          ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.quadraticCurveTo((p1.x + p2.x) / 2, (p1.y + p2.y) / 2 + 5, p2.x, p2.y); ctx.stroke();
+          if (ri === 1 || ri === 3) { ctx.beginPath(); ctx.arc(p1.x, p1.y, 2.6, 0, 7); ctx.fill(); }
+        }
+      });
+      if (phase === 'reach' && strands.some(st => st.stuck)) { ctx.beginPath(); ctx.arc(WEB.x, WEB.y, 5, 0, 7); ctx.fill(); }
+      ctx.globalAlpha = 1;
+    }
+
+    readers.push((t, f) => {
+      const cap = !T.auto && P.inside ? MAG.cap : null;
+      if (cap && cap.el !== owner) { if (owner) release(t); begin(cap, t); }
+      else if (!cap && phase === 'reach') release(t);
+      if (cap) {
+        last = cap;
+        let d = facing(cap, P.x, P.y) - phi;
+        d = Math.atan2(Math.sin(d), Math.cos(d));
+        phi += d * damp(0.12, f);
+      }
+      if (phase === 'reach' && last) {
+        const c = last, grip = strands.filter(st => st.stuck).length / N;
+        tug += (grip - tug) * damp(0.18, f);
+        // Where is the real pointer relative to the button's outline?
+        const rx = P.x - c.x, ry = P.y - c.y, dist = Math.hypot(rx, ry) || 1e-4, ux = rx / dist, uy = ry / dist;
+        const edge = rimDist(ux, uy, c) + 4;
+        const out = dist - edge;
+        // Inside the button the cursor moves freely and smoothly. Outside it is jailed on an elastic leash:
+        // however far the pointer goes, the visible cursor only creeps toward LEASH px past the edge.
+        const held = out <= 0 ? dist : edge + LEASH * (1 - Math.exp(-out / LEASH));
+        const jx = c.x + ux * held, jy = c.y + uy * held;
+        // Shake only while trying to escape: outward speed drives it, a sustained pull keeps a little.
+        const vOut = (out - lastOut) / f; lastOut = out;
+        const push = out > 0 ? clamp(vOut / 9, 0, 1) : 0;
+        effort += (push - effort) * damp(push > effort ? 0.5 : 0.12, f);
+        const strain = out > 0 && vOut > -0.4 ? clamp(out / 220, 0, 1) * 0.35 : 0;
+        WEB.shake = tug * clamp(effort + strain, 0, 1);
+        const amp = WEB.shake * 14;
+        WEB.on = true;
+        WEB.x = lerp(P.x, jx, tug) + (Math.sin(t * 0.11) * 0.6 + (Math.random() - 0.5)) * amp;
+        WEB.y = lerp(P.y, jy, tug) + (Math.cos(t * 0.13) * 0.6 + (Math.random() - 0.5)) * amp;
+      } else { lastOut = 0; effort = 0; }
+      if (phase === 'idle') { if (dirty) { ctx.clearRect(0, 0, W, H); dirty = false; } return; }
+      if (phase === 'snap' || phase === 'done') {
+        alpha = phase === 'done' ? 1 - clamp((t - t0) / 380, 0, 1) : 1 - clamp((t - t0 - 160) / 420, 0, 1);
+        if (alpha <= 0) { phase = 'idle'; ctx.clearRect(0, 0, W, H); dirty = false; return; }
+      }
+      step(t, f, WEB.x, WEB.y);
+      draw(t); dirty = true;
     });
   })();
 
