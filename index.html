@@ -2612,5 +2612,18 @@ Welcome. Type <span class="ac">help</span> to see what you can do here.`);
   preloader();
 })();
 </script>
+<script>
+/* Email-signature banner clicks: visits that arrive with ?ref=email-signature add 1 to an anonymous
+   counter. Nothing else is sent or stored: no cookies, no IDs, no referrer. */
+(function () {
+  try {
+    if (new URLSearchParams(location.search).get('ref') !== 'email-signature') return;
+    var img = new Image();
+    img.referrerPolicy = 'no-referrer';
+    img.src = 'https://hits.sh/c96d2576.dev/email-banner.svg';
+    history.replaceState(null, '', location.pathname + location.hash);
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
