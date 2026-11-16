@@ -2613,30 +2613,41 @@ Welcome. Type <span class="ac">help</span> to see what you can do here.`);
 })();
 </script>
 <script>
-/* Visit alert: every visit pings Ali's own Google Apps Script once, and it emails him the counts.
-   Nothing about the visitor is sent: no cookies, no IDs, no referrer. The only parameter says whether
-   the visit came through one of Ali's tagged links (banner, cv, linkedin).
+/* Visit alert (v3): emails Ali once per real visit, through his own Google Apps Script.
+   Only real people count. The ping waits for a genuine mouse, touch or key interaction in a visible tab,
+   at least 2.5 s after the page opened. Automated and headless browsers (navigator.webdriver), crawlers,
+   link scanners, preview bots and ATS link checkers don't interact, so they never trigger it.
+   Nothing about the visitor is sent: no cookies, no IDs, no referrer, no user agent. The only parameters are the
+   snippet version, the kind of interaction, and whether the visit came through one of Ali's tagged links.
    alihuzain.github.io/?me=1 stops alerts for that browser (Ali's own devices); ?me=0 turns them back on. */
 (function () {
-  var src = '', skip = false;
+  var src = '', t0 = Date.now(), sent = false;
   try {
-    var q = new URLSearchParams(location.search);
+    var q = new URLSearchParams(location.search), skip = false;
     src = ({ 'email-signature': 'banner', 'resume': 'cv', 'linkedin': 'linkedin' })[q.get('ref')] || '';
     try {
       if (q.get('me') === '1') localStorage.setItem('skipVisitAlert', '1');
       if (q.get('me') === '0') localStorage.removeItem('skipVisitAlert');
       skip = localStorage.getItem('skipVisitAlert') === '1';
     } catch (e) {}
-    try {
-      if (!skip && sessionStorage.getItem('visitAlerted') === '1') skip = true;   // reloads in the same tab don't count twice
-      else sessionStorage.setItem('visitAlerted', '1');
-    } catch (e) {}
+    try { if (sessionStorage.getItem('visitAlerted') === '1') skip = true; } catch (e) {}   // reloads in the same tab don't count twice
     if (q.has('ref') || q.has('me')) history.replaceState(null, '', location.pathname + location.hash);
+    if (skip) return;
   } catch (e) {}
-  if (skip) return;
-  var url = 'https://script.google.com/macros/s/AKfycbzBTuv41aEB2xaAhihXYz2i-tNvxlL2q506UBzDcu2902XkxVI-JGhofBoNNcXpFlVIog/exec' + (src ? '?src=' + src : '');
-  try { fetch(url, { mode: 'no-cors', credentials: 'omit', referrerPolicy: 'no-referrer', keepalive: true }).catch(function () {}); }
-  catch (e) { var i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = url; }
+  if (navigator.webdriver) return;   // automated or headless browser
+  if (/googlebot|bingbot|yandex|duckduckbot|baiduspider|applebot|linkedinbot|twitterbot|slackbot|discordbot|telegrambot|whatsapp\/|facebookexternalhit|meta-externalagent|petalbot|semrush|ahrefs|mj12bot|dotbot|gptbot|claudebot|ccbot|bytespider|amazonbot|crawler|spider|headless|phantomjs|puppeteer|playwright|selenium|lighthouse|pagespeed|inspectiontool|gtmetrix|pingdom|uptimerobot|statuscake|bingpreview|skypeuripreview|embedly|proofpoint|mimecast|barracuda|python-|curl\/|wget\/|okhttp|go-http-client|axios\/|node-fetch|java\/|httpclient|scrapy|httpx/i.test(navigator.userAgent || '')) return;
+  var kinds = { pointermove: 'pointer', pointerdown: 'pointer', wheel: 'pointer', touchstart: 'touch', keydown: 'key' };
+  function stop() { for (var n in kinds) removeEventListener(n, act, true); }
+  function act(ev) {
+    if (sent || !ev.isTrusted || document.visibilityState !== 'visible' || document.prerendering) return;
+    if (Date.now() - t0 < 2500) return;   // too soon: wait for the next interaction
+    sent = true; stop();
+    try { sessionStorage.setItem('visitAlerted', '1'); } catch (e) {}
+    var url = 'https://script.google.com/macros/s/AKfycbzBTuv41aEB2xaAhihXYz2i-tNvxlL2q506UBzDcu2902XkxVI-JGhofBoNNcXpFlVIog/exec' + '?v=3&h=' + kinds[ev.type] + (src ? '&src=' + src : '');
+    try { fetch(url, { mode: 'no-cors', credentials: 'omit', referrerPolicy: 'no-referrer', keepalive: true }).catch(function () {}); }
+    catch (e) { var i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = url; }
+  }
+  for (var n in kinds) addEventListener(n, act, { capture: true, passive: true });
 })();
 </script>
 </body>
