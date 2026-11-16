@@ -2613,15 +2613,16 @@ Welcome. Type <span class="ac">help</span> to see what you can do here.`);
 })();
 </script>
 <script>
-/* Visit alert (v3): emails Ali once per real visit, through his own Google Apps Script.
-   Only real people count. The ping waits for a genuine mouse, touch or key interaction in a visible tab,
-   at least 2.5 s after the page opened. Automated and headless browsers (navigator.webdriver), crawlers,
-   link scanners, preview bots and ATS link checkers don't interact, so they never trigger it.
-   Nothing about the visitor is sent: no cookies, no IDs, no referrer, no user agent. The only parameters are the
-   snippet version, the kind of interaction, and whether the visit came through one of Ali's tagged links.
-   alihuzain.github.io/?me=1 stops alerts for that browser (Ali's own devices); ?me=0 turns them back on. */
+/* Visit alert (v4): tells Ali who opened his portfolio, through his own Google Apps Script. Each visit is classified once:
+   - a real person: the first genuine touch, mouse or key interaction in a visible tab, at least 2.5 s after the page opened,
+     reported as "touch" (phone or tablet), "pointer" (mouse, computer) or "key" (keyboard only, computer);
+   - an ATS, link scanner or other automated browser (navigator.webdriver, or scanner software): reported as "bot" right away;
+   - unknown: the page was shown and then closed without any human interaction: reported as "bot" (idle).
+   Search-engine crawlers and link-preview bots are ignored.
+   Only that label is sent, never what was clicked or typed, and nothing about the visitor: no cookies, IDs, referrer or
+   user agent. alihuzain.github.io/?me=1 stops alerts for that browser (Ali's own devices); ?me=0 turns them back on. */
 (function () {
-  var src = '', t0 = Date.now(), sent = false;
+  var src = '', t0 = Date.now(), done = false, shown = false;
   try {
     var q = new URLSearchParams(location.search), skip = false;
     src = ({ 'email-signature': 'banner', 'resume': 'cv', 'linkedin': 'linkedin' })[q.get('ref')] || '';
@@ -2630,24 +2631,33 @@ Welcome. Type <span class="ac">help</span> to see what you can do here.`);
       if (q.get('me') === '0') localStorage.removeItem('skipVisitAlert');
       skip = localStorage.getItem('skipVisitAlert') === '1';
     } catch (e) {}
-    try { if (sessionStorage.getItem('visitAlerted') === '1') skip = true; } catch (e) {}   // reloads in the same tab don't count twice
+    try { if (sessionStorage.getItem('visitAlerted') === '1') skip = true; } catch (e) {}   // one report per tab; reloads don't repeat it
     if (q.has('ref') || q.has('me')) history.replaceState(null, '', location.pathname + location.hash);
     if (skip) return;
   } catch (e) {}
-  if (navigator.webdriver) return;   // automated or headless browser
-  if (/googlebot|bingbot|yandex|duckduckbot|baiduspider|applebot|linkedinbot|twitterbot|slackbot|discordbot|telegrambot|whatsapp\/|facebookexternalhit|meta-externalagent|petalbot|semrush|ahrefs|mj12bot|dotbot|gptbot|claudebot|ccbot|bytespider|amazonbot|crawler|spider|headless|phantomjs|puppeteer|playwright|selenium|lighthouse|pagespeed|inspectiontool|gtmetrix|pingdom|uptimerobot|statuscake|bingpreview|skypeuripreview|embedly|proofpoint|mimecast|barracuda|python-|curl\/|wget\/|okhttp|go-http-client|axios\/|node-fetch|java\/|httpclient|scrapy|httpx/i.test(navigator.userAgent || '')) return;
-  var kinds = { pointermove: 'pointer', pointerdown: 'pointer', wheel: 'pointer', touchstart: 'touch', keydown: 'key' };
-  function stop() { for (var n in kinds) removeEventListener(n, act, true); }
-  function act(ev) {
-    if (sent || !ev.isTrusted || document.visibilityState !== 'visible' || document.prerendering) return;
-    if (Date.now() - t0 < 2500) return;   // too soon: wait for the next interaction
-    sent = true; stop();
+  var ua = navigator.userAgent || '';
+  if (/googlebot|bingbot|yandex|duckduckbot|baiduspider|applebot|linkedinbot|twitterbot|slackbot|discordbot|telegrambot|whatsapp\/|facebookexternalhit|meta-externalagent|petalbot|semrush|ahrefs|mj12bot|dotbot|gptbot|claudebot|ccbot|bytespider|amazonbot|bingpreview|skypeuripreview|embedly|crawler|spider/i.test(ua)) return;   // search and link-preview bots: ignored
+  function report(h, r, leaving) {
+    if (done) return;
+    done = true;
     try { sessionStorage.setItem('visitAlerted', '1'); } catch (e) {}
-    var url = 'https://script.google.com/macros/s/AKfycbzBTuv41aEB2xaAhihXYz2i-tNvxlL2q506UBzDcu2902XkxVI-JGhofBoNNcXpFlVIog/exec' + '?v=3&h=' + kinds[ev.type] + (src ? '&src=' + src : '');
+    var url = 'https://script.google.com/macros/s/AKfycbzBTuv41aEB2xaAhihXYz2i-tNvxlL2q506UBzDcu2902XkxVI-JGhofBoNNcXpFlVIog/exec' + '?v=4&h=' + h + (r ? '&r=' + r : '') + (src ? '&src=' + src : '');
+    if (leaving) { try { if (navigator.sendBeacon && navigator.sendBeacon(url)) return; } catch (e) {} }
     try { fetch(url, { mode: 'no-cors', credentials: 'omit', referrerPolicy: 'no-referrer', keepalive: true }).catch(function () {}); }
     catch (e) { var i = new Image(); i.referrerPolicy = 'no-referrer'; i.src = url; }
   }
-  for (var n in kinds) addEventListener(n, act, { capture: true, passive: true });
+  if (navigator.webdriver) return report('bot', 'auto');   // automated browser: how ATS systems and link scanners open links
+  if (/headless|phantomjs|puppeteer|playwright|selenium|lighthouse|pagespeed|inspectiontool|gtmetrix|pingdom|uptimerobot|statuscake|proofpoint|mimecast|barracuda|python-|curl\/|wget\/|okhttp|go-http-client|axios\/|node-fetch|java\/|httpclient|scrapy|httpx/i.test(ua)) return report('bot', 'ua');
+  function vis() { if (document.visibilityState === 'visible' && !document.prerendering) shown = true; return shown && document.visibilityState === 'visible'; }
+  vis();
+  function act(ev) {
+    if (done || !ev.isTrusted || !vis() || Date.now() - t0 < 2500) return;   // the real-person check
+    var pt = ev.pointerType || '';   // phones fire pointerdown (pointerType "touch") before touchstart
+    report(ev.type === 'keydown' ? 'key' : (ev.type === 'touchstart' || (pt && pt !== 'mouse')) ? 'touch' : 'pointer');
+  }
+  ['pointermove', 'pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (t) { addEventListener(t, act, { capture: true, passive: true }); });
+  document.addEventListener('visibilitychange', vis);
+  addEventListener('pagehide', function () { if (shown) report('bot', 'idle', true); });   // shown, then closed with no human interaction
 })();
 </script>
 </body>
